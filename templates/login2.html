@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <link rel="icon" href="/static/Doculift_Logo1_test1-1.png" type="image/png" sizes="48x48">
+  <link href="/static/styles.css" rel="stylesheet">
+
+  <title>Sign in - DocuLift</title>
+  
+  <style>
+    /* Estilos personalizados para el alert de error 
+    #login-alert {
+      border: 1px solid #dc3545;
+      border-radius: 8px;
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(220, 53, 69, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    #login-alert.show {
+      animation: slideInDown 0.3s ease-out;
+    }
+    
+    #login-alert .btn-close {
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+    
+    #login-alert .btn-close:hover {
+      opacity: 1;
+
+    }
+
+    #login-alert .btn-close:active {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    
+    #login-alert .bi-exclamation-circle-fill {
+      font-size: 1.2rem;
+    }
+    
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }*/
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get references to the main page elements
+      const loginpage = document.getElementById('login-container');        // Login form container
+      const loginform = document.getElementById('login-form');            // Login form element
+
+      const registerpage =  document.getElementById('register-container'); // Registration form container
+      const registerform = document.getElementById('register-form');       // Registration form element
+      const registerMessage = document.getElementById('register-message'); // General error message for registration
+      const registerPasswordErrorElement = document.getElementById('registerPassword' + '-error'); // Password validation rules container
+
+      // Event delegation for the close alert button
+      document.addEventListener('click', function(e) {
+        if (e.target && e.target.getAttribute('data-action') === 'close-alert') {
+          hideLoginAlert();
+        }
+      });
+
+      // Handle clicking the "Create Account" link to switch to registration form
+      document.getElementById('show-register').addEventListener('click', function(e) {       
+        const errorElements = loginform.querySelectorAll('.invalid-feedback');
+        const errorlabels = loginform.querySelectorAll('label');
+        const formfields = loginform.querySelectorAll('.form-control');
+        const alertElement = document.getElementById('login-alert');
+        
+
+        e.preventDefault();
+        loginpage.style.display = 'none';
+
+        // Clear all error messages from login form
+        for ( let i = 0; i < errorElements.length; i++ ) {
+          errorElements[i].innerHTML = ``; // Remove error text
+        }
+
+        // Remove red color from all labels (reset visual error state)
+        for ( let i = 0; i < errorlabels.length; i ++) {
+          errorlabels[i].classList.remove('text-danger');
+        }
+
+        // Remove invalid styling from all form fields
+        for ( let i = 0; i < formfields.length; i++ ) {
+          formfields[i].classList.remove('invalid');
+        }
+
+        // Hide the login alert tag error if it exists
+        if (alertElement) {
+          alertElement.classList.add('d-none');
+          alertElement.classList.remove('show');
+        }
+
+        // Show the registration form
+        registerpage.style.display = 'block';
+        
+        // Initialize password validation rules as collapsed but ready to expand
+        if (registerPasswordErrorElement) {
+          // Create HTML for all password validation rules (initially all red/failing)
+          registerPasswordErrorElement.innerHTML = `
+            <div id="registerPassword-error-len" class="text-danger" style="display: block; margin-bottom: 5px;">Su contraseña debe contener al menos 9 caracteres</div>
+            <div id="registerPassword-error-case" class="text-danger" style="display: block; margin-bottom: 5px;">Su contraseña debe contener letras mayúsculas y minúsculas</div>
+            <div id="registerPassword-error-digit" class="text-danger" style="display: block; margin-bottom: 5px;">Su contraseña debe contener al menos un dígito numérico</div>
+            <div id="registerPassword-error-special" class="text-danger" style="display: block; margin-bottom: 5px;">Su contraseña debe contener al menos un carácter especial, como @, #, $.</div>
+          `;
+          // Set initial collapsed state (hidden but ready to animate)
+          registerPasswordErrorElement.style.display = 'block';
+          registerPasswordErrorElement.style.overflow = 'hidden';
+          registerPasswordErrorElement.style.height = '0';        // Collapsed height
+          registerPasswordErrorElement.style.opacity = '0';       // Invisible
+          registerPasswordErrorElement.style.marginTop = '0';     // No margin
+          registerPasswordErrorElement.style.transition = 'height 0.25s ease, opacity 0.2s ease, margin-top 0.2s ease'; // Smooth animations
+        }
+        return false; // Prevent any default link behavior
+      });
+      
+      document.getElementById('show-login').addEventListener('click', function(e) {
+        e.preventDefault();
+        registerpage.style.display = 'none';
+
+        registerform.reset();
+
+        const errorElements = registerform.querySelectorAll('.invalid-feedback');
+        const errorlabels = registerform.querySelectorAll('label');
+        const formfields = registerform.querySelectorAll('.form-control');
+        passwordIsValid = false;
+        
+        // Clear all error messages from register form
+        for ( let i = 0; i < errorElements.length; i++ ) {
+          errorElements[i].innerHTML = ``;
+        }
+        // Remove red color from all labels (reset visual error state)
+        for ( let i = 0; i < errorlabels.length; i ++) {
+          errorlabels[i].classList.remove('text-danger');
+        }
+        // Remove invalid styling from all form fields
+        for ( let i = 0; i < formfields.length; i++ ) {
+          formfields[i].classList.remove('invalid');
+        }
+
+        loginpage.style.display = 'block';
+      });
+
+      // Function to validate a single field by sending it to the server
+      async function validateField(fieldName, value) {
+        try {
+          const response = await fetch('/validate-field-public', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              field: fieldName,
+              value: value
+            })
+          });
+          
+          // Parse the server's JSON response
+          const data = await response.json();
+          return data; // Return validation result (success: true/false, message: error details)
+        } catch (error) {
+          // If network request fails, log error and return connection error
+          console.error('Error:', error);
+          return { success: false, message: 'Error de conexión' };
+        }
+      }
+
+      // Función para mostrar/ocultar mensajes de error
+      function showFieldError(fieldId, message) {
+        const field = document.getElementById(fieldId);                    // Get the input field
+        const errorElement = document.getElementById(fieldId + '-error'); // Get the error message container
+        const label = document.querySelector(`label[for="${fieldId}"]`);  // Get the field's label
+        
+        // If there's an error message to show
+        if (message) {
+          // Avoid showing the same error message again 
+          if (field.classList.contains('invalid') && message === errorElement.textContent.trim()) {
+            return; 
+          }
+        
+          field.classList.add('invalid');           
+          if (label) label.classList.add('text-danger');
+          
+          // Special handling for password field (has its own validation rules)
+          if (fieldId != 'registerPassword') {
+            // Create error message HTML with icon
+            errorElement.innerHTML = `
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span class="msg"></span>
+                    `;
+            const msg = errorElement.querySelector('.msg');
+            msg.textContent = message || 'Ha ocurrido un error';
+            
+            // Set up element for smooth animation (start hidden)
+            errorElement.style.display = 'block';
+            errorElement.style.opacity = '0';           // Invisible
+            errorElement.style.transform = 'translateY(-10px)'; // Slightly above final position
+            errorElement.style.marginTop = '0';         // No margin initially
+            errorElement.style.height = '0';            // No height initially
+            errorElement.style.overflow = 'hidden';     // Hide overflow during animation
+            
+            // Force browser to apply the styles before animation
+            errorElement.offsetHeight;
+            
+            // Start animation after a short delay
+            setTimeout(() => {
+              // Animate to final visible state
+              errorElement.style.transition = 'all 0.2s ease';
+              errorElement.style.opacity = '1';         // Fade in
+              errorElement.style.transform = 'translateY(0)'; // Move to final position
+              errorElement.style.marginTop = '0.5rem';  // Add spacing
+              errorElement.style.height = 'auto';       // Expand to content height
+            }, 150);
+          }
+        } else {
+          // No error message - clear error state
+          field.classList.remove('invalid');           // Remove invalid styling
+          label.classList.remove('text-danger');       // Remove red label color
+          if (errorElement && fieldId != 'registerPassword') {
+            errorElement.innerHTML = ``; 
+          }
+        }
+      }
+
+      // Function to show login alert tag 
+      function showLoginAlert(message) {
+        const alertElement = document.getElementById('login-alert');
+        if (alertElement) {
+          alertElement.classList.remove('d-none');
+          if (message === 'Error de conexión') {
+            alertElement.innerHTML = `
+              <div class="d-flex align-items-center">
+                <div class="me-3">
+                  <i class="bi bi-wifi-off text-danger"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold">Error de conexión</div>
+                </div>
+                <button type="button" class="btn-close" data-action="close-alert" aria-label="Cerrar"></button>
+              </div>
+          `;
+          } else if (message === 'Ha ocurrido un error al procesar la solicitud') {
+            alertElement.innerHTML = `
+              <div class="d-flex align-items-center">
+                <div class="me-3">
+                  <i class="bi bi-exclamation-triangle-fill" text-danger"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold">"Ha ocurrido un error al procesar la solicitud"</div>
+                </div>
+                <button type="button" class="btn-close" data-action="close-alert" aria-label="Cerrar"></button>
+              </div>
+          `;
+          } else {
+            alertElement.innerHTML = `
+              <div class="d-flex align-items-center">
+                <div class="me-3">
+                  <i class="bi bi-exclamation-circle-fill text-danger"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="fw-bold">Credenciales inválidas</div>
+                  <div class="small">${message}</div>
+                </div>
+                <button type="button" class="btn-close" data-action="close-alert" aria-label="Cerrar"></button>
+              </div>
+          `;
+        }
+          alertElement.classList.add('show');
+        }
+      }
+      
+      // Function to hide the login alert tag
+      function hideLoginAlert() {
+        const alertElement = document.getElementById('login-alert');
+        if (alertElement) {
+          alertElement.classList.add('d-none');
+          alertElement.classList.remove('show');
+          // Limpiar el contenido después de ocultar
+          setTimeout(() => {
+            alertElement.innerHTML = '';
+          }, 300);
+        }
+      }
+
+      // Function to show general error message for registration form
+      function showGeneralErrorRegister(message) {
+        const generalMessage = document.getElementById('register-message');
+        if (generalMessage) {
+          generalMessage.textContent = message;
+          generalMessage.classList.add('text-danger');
+          generalMessage.style.display = 'block';
+        }
+      }
+      
+      // Configure validation for each form field
+      // Each object contains: id (HTML element ID) and name (server field name)
+      const fieldsToValidate = [
+        { id: 'loginEmail', name: 'loginEmail' },
+        { id: 'loginPassword', name: 'loginPassword' },
+        { id: 'registerEmail', name: 'email' },
+        { id: 'registerUser', name: 'username' },
+        { id: 'registerPassword', name: 'password'}
+      ];
+      
+      // Handle login form submission
+      loginform.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(loginform);
+        
+        try {
+          let response = await fetch('/login', {
+            method: 'POST',
+            body: formData
+          });
+
+          let data = await response.json();
+
+          if (data.success) {
+            //Login successful - redirect to main page
+            window.location.href = '/';
+          } else {
+            // Login failed - handle different types of errors
+            if (data.fieldErrors) {
+              Object.keys(data.fieldErrors).forEach(fieldKey => {
+                const errorMessage = data.fieldErrors[fieldKey];
+               
+                if (errorMessage) {
+                  showFieldError(fieldKey, errorMessage); // Show error under specific field
+                }
+              });
+            } else {
+              // General error (e.g., wrong credentials)
+              showLoginAlert(data.message || 'Ha ocurrido un error al procesar la solicitud');
+            }
+          }
+        } catch (error) {
+          // Network or other error occurred
+          console.error('Error:', error);
+          showLoginAlert('Error de conexión');
+        }
+      })
+
+      // Handle registration form submission
+      registerform.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(registerform);
+        
+        try {
+          let response = await fetch('/register', {
+            method: 'POST',
+            body: formData
+          });
+
+          let data = await response.json();
+          
+          if (data.success) {
+            // Registration successful - redirect to main page
+            window.location.href = '/';
+          } else {
+            // Registration failed - handle different types of errors
+            if (data.fieldErrors) {
+              // Field-specific validation errors
+              
+              Object.keys(data.fieldErrors).forEach(fieldKey => {
+                const errorMessage = data.fieldErrors[fieldKey];
+                // fieldKey ya es el ID correcto del campo (ej: "registerEmail")
+                if (errorMessage) {
+                  showFieldError(fieldKey, errorMessage);
+                }
+              });
+            } else {
+              // General error (e.g., server error)
+              showGeneralErrorRegister(data.message || 'Error en el registro');
+            }
+          }
+        } catch (error) {
+          // Network or other error occurred
+          console.error('Error:', error);
+          showGeneralErrorRegister('Error de conexión');
+        }
+      });
+
+      // Get references to password field elements
+      const element = document.getElementById('registerPassword');       
+      const label = document.querySelector('label[for="registerPassword"]'); 
+      let passwordIsValid = false; 
+
+      // Handle when user clicks/focuses on password field
+      element.addEventListener('focus', function() {
+        if (registerPasswordErrorElement) {
+          // Remove red color from label 
+          if(label) label.classList.remove('text-danger');
+          
+          // Expand password rules to their natural height, pushing next field down
+          const targetHeight = registerPasswordErrorElement.scrollHeight;
+          registerPasswordErrorElement.style.height = targetHeight + 'px';
+          registerPasswordErrorElement.style.opacity = '1';           // Make visible
+          registerPasswordErrorElement.style.marginTop = '0.5rem';    // Add spacing
+        }
+      });
+
+    
+      // Handle when user types in password field (real-time validation)
+      element.addEventListener('input', async function() {
+        const value = element.value; // Get current password value
+        try {
+          // Send password to server for validation
+          const result = await validateField('password', value);
+          // Show field error if validation failed (empty string if successful)
+          showFieldError('registerPassword', result.success ? '' : result.message);
+          // Update password validity status (convert to boolean)
+          passwordIsValid = !!result.success;
+          
+          // Define the four password validation rules
+          const ruleIds = ['len','case','digit','special'];
+          
+          // Create a Set of failing rules 
+          const failing = new Set(
+            Array.isArray(result.message) ?   // Is result.message an array?
+             result.message :                 // Yes: Use the array as it comes (specific failing rules)
+              (value ? [] : ruleIds)          // No: Is there content in password field?
+          );                                  //   Yes: empty array (nothing failed)
+                                             //   No: every rule failed (all rules in ruleIds)
+
+          // Update visual state of each password rule
+          for (let i = 0; i < ruleIds.length; i++) {
+            const id = 'registerPassword-error-' + ruleIds[i];
+            const node = document.getElementById(id);
+            if (!node) continue;
+            if (failing.has(ruleIds[i])) {
+              node.classList.add('text-danger');
+              node.classList.remove('text-success');
+              
+            } else {
+              node.classList.add('text-success');
+              node.classList.remove('text-danger');
+              
+            }
+          }
+          
+          // Recalculate height in case content changes (e.g., text wrapping)
+          if (registerPasswordErrorElement && registerPasswordErrorElement.style.height !== '0px') {
+            registerPasswordErrorElement.style.height = registerPasswordErrorElement.scrollHeight + 'px';
+          }
+        } catch (e) {
+          // Ignore transient errors (network issues, etc.)
+        }
+      });
+
+      // Handle when user leaves password field (blur event)
+      element.addEventListener('blur', async function() {
+        if (registerPasswordErrorElement) {
+          // If rules were expanded, anchor current height then collapse
+          const currentHeight = registerPasswordErrorElement.scrollHeight;
+          registerPasswordErrorElement.style.height = currentHeight + 'px';
+          
+          // Force browser reflow before collapsing (ensures smooth animation)
+          void registerPasswordErrorElement.offsetHeight;
+          
+          // Collapse the password rules section
+          registerPasswordErrorElement.style.height = '0';        // Collapse height
+          registerPasswordErrorElement.style.opacity = '0';       // Fade out
+          registerPasswordErrorElement.style.marginTop = '0';     // Remove spacing
+          
+          // Update field styling based on password validity
+          if (!passwordIsValid) {
+            element.classList.add('invalid');
+            if (label) label.classList.add('text-danger');
+          } else {
+            element.classList.remove('invalid');
+            if (label) label.classList.remove('text-danger');
+          }
+        }
+      });
+
+      // Set up validation for all form fields (except password which has special handling)
+      for ( let i = 0 ; i < fieldsToValidate.length-1 ; i ++) {
+        const element = document.getElementById(fieldsToValidate[i].id);
+        const errorElement = document.getElementById(fieldsToValidate[i].id + '-error');
+        const label = document.querySelector(`label[for="${fieldsToValidate[i].id}"]`);
+
+        // Validate when user leaves the field 
+        element.addEventListener('blur', async function() {
+          const value = element.value.trim();
+          
+          // Send field to server for validation
+          const result = await validateField(fieldsToValidate[i].name, value);
+          // Show error if validation failed, clear error if successful
+          showFieldError(fieldsToValidate[i].id, result.success ? '' : result.message);
+        });
+
+        // Handle when user clicks/focuses on field
+        element.addEventListener('focus', function() {         
+          if (errorElement) {
+            if(label) label.classList.remove('text-danger');
+            errorElement.innerHTML = ``; 
+          }
+        });
+
+        element.addEventListener('input', function() {
+          if(errorElement) {
+            if(label) label.classList.remove('text-danger');
+            errorElement.innerHTML = ``;
+          }
+        })
+      }      
+    });
+  </script>
+</head>
+
+
+<body>
+  <div class="container-fluid vh-100">
+    <div class="row h-100">
+        <!-- Mitad derecha: Imagen de fondo -->
+      <div class="col d-none d-lg-block p-0 m-0">
+        <div class="position-sticky top-0 h-100 w-100 bg-cover bg-right-image d-flex flex-column justify-content-center align-items-center text-start">
+          <h1 class="h1 mt-30 mb-3 fw-bold text-white">
+            <span class="d-block">La precisión</span>
+            <span class="d-block">empieza aquí.</span>
+          </h1>
+          <h2 class="h3 fw-normal text-white">
+            <span class="d-block">Accede fácilmente a toda</span>
+            <span class="d-block">tu documentación técnica.</span>
+          </h2>
+        </div>
+      </div>
+      <!-- Mitad izquierda: Formulario -->
+      <div class="col-lg-auto d-flex justify-content-center align-items-center vh-100 overflow-auto">
+        <main class="form-signin w-100">
+          <img class="mb-4" src="/static/DocuLift_FullLogo.png" alt="logo" style="width:243px;height:auto;">
+            <div id="login-container">
+              <h1 class="h3 mb-3 fw-normal">¡Te damos la bienvenida!</h1>
+              <h2 class="h6 mb-4 fw-light">Inicia sesión para acceder a tus proyectos, gestionar la documentación técnica y simplificar tus procesos.</h2>
+              
+              <!-- Alert de error para credenciales inválidas -->
+              <div id="login-alert" class="alert alert-danger d-none" role="alert"></div>
+              
+            
+              <form id="login-form">
+                <div class="form-floating mb-3">
+                  <input autocomplete="current-email" id="loginEmail" name="loginEmail" placeholder="Email"  type="text" class="form-control">
+                  <label for="loginEmail">Email</label>
+                  <div class="fw-light invalid-feedback" id="loginEmail-error"></div>
+                </div>
+
+                <div class="form-floating mb-4">
+                  <input autocomplete="current-password" id="loginPassword" name="loginPassword" placeholder="Contraseña" type="password" class="form-control">
+                  <label for="loginPassword">Contraseña</label>
+                  <div class="fw-light invalid-feedback" id="loginPassword-error"></div>
+                  
+                </div>
+                <button class="btn btn-primary w-100 py-2" type="submit">Entrar</button>
+              </form>
+              <div class="d-flex flex-column bd-highlight mt-4">
+                <div class="mt-4 bd-highlight text-body-secondary">
+                  <span>¿Aún no tiene una cuenta?</span>
+                  <a class="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-body-secondary" href="#register" id="show-register">
+                    Cree su cuenta
+                  </a>
+                </div>
+                  <a class="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-body-secondary" href="#forgot">
+                    ¿Ha olvidado su contraseña?
+                  </a>
+              </div>
+            </div>
+            <div id="register-container" style="display:none;">
+              <h1 class="h3 mb-3 fw-normal">Crea una cuenta</h1>
+              <h2 class="h6 mb-4 fw-light">Obtenga acceso a los servicios de DocuLift.</h2>
+              <form id="register-form">
+                <div class="form-floating mb-3">
+                  <input autocomplete="user" id="registerUser" name="registerUser" placeholder="Usuario" type="text" class="form-control">
+                  <label for="registerUser">Nombre</label>
+                  <div class="fw-light invalid-feedback" id="registerUser-error"></div>
+                </div>
+                <div class="form-floating mb-3">
+                  <input autocomplete="email" autofocus id="registerEmail" name="registerEmail" placeholder="Correo electrónico" type="text" class="form-control">
+                  <label for="registerEmail">Correo electrónico</label>
+                  <div class="fw-light invalid-feedback" id="registerEmail-error"></div>
+                </div>
+                <div class="form-floating mb-4">
+                  <input autocomplete="new-password" id="registerPassword" name="registerPassword" placeholder="Contraseña" type="password" class="form-control">
+                  <label for="registerPassword">Contraseña</label>
+                  <div class="fw-light invalid-feedback" id="registerPassword-error"></div>
+                </div>
+                <button class="btn btn-primary w-100 py-2" type="submit">Registrar</button>
+              </form>
+              <p class="mt-3 text-center text-danger" id="register-message"></p>
+              <div class="mt-4 bd-highlight text-body-secondary">
+                <span>¿Ya tienes una cuenta?</span>
+                <a class="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-75-hover text-body-secondary" href="#register" id="show-login">
+                  Inicia sesión
+                </a>
+              </div>
+            </div>
+        </main>
+      </div>
+
+      
+    </div>
+  </div>
+</body>
+
+</html>

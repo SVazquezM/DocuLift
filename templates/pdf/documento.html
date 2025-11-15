@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Modificación de Ascensor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pdf/styles.css') }}">
+    <script>
+        function modificationsCheckboxes() {
+            const modificationsCheckboxes = document.querySelectorAll('.modification-item input[type="checkbox"]');
+            modificationsCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                for (let i = 0; i < project_data.modification_types.length; i++) {
+                    if(project_data.modification_types[i].code == checkbox.id) {
+                        checkbox.checked = true;
+                    }
+                }
+
+            });
+        }
+
+        function legalizationProcessCheckboxes() {
+            const legalizationProcessCheckboxes = document.querySelectorAll('.annex input[type="checkbox"]');
+            legalizationProcessCheckboxes.forEach(checkbox => {
+                for (let i = 0; i < project_data.legalization_process.length; i++) {
+                    if(project_data.legalization_process[i].code == checkbox.id || project_data.legalization_process[i].code == checkbox.id + 3) {
+                        checkbox.checked = true;
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="document">
+        <!-- Header -->
+        <div class="header">
+            <table class="header-table">
+                <tr>
+                    <td class="rae-cell">
+                        <strong>RAE: {{ project_data.rae }}</strong>
+                    </td>
+                    <td class="empty-cell"></td>
+                    <td class="expediente-cell">
+                        <strong>Nº de expediente: {{ project_data.order_number }}</strong>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- Signature -->
+        <div class="signature">
+            <table class="signatur-table">
+                <tr>
+                    <td class="signature-label">Firma:_________________</td>
+                    <td class="date-label">Fecha: {{ project_data.updated_at.strftime('%d/%m/%Y') or project_data.created_at.strftime('%d/%m/%Y') }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="page1">
+            <!-- Datos del cliente -->
+            <div class="section">
+                <h2>Datos cliente:</h2>
+                <table class="data-table">
+                    <tr>
+                        <td class="label">Nombre:</td>
+                        <td class="value">{{ project_data.client_name }}</td>
+                        <td class="label-right">NIF:</td>
+                        <td class="value-right">{{ project_data.client_nif }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Dirección:</td>
+                        <td class="value">{{ project_data.client_address }}</td>
+                        <td class="label-right"></td>
+                        <td class="value-right"></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Localidad:</td>
+                        <td class="value">{{ project_data.client_city }}</td>
+                        <td class="label-right">C.P:</td>
+                        <td class="value-right">{{ project_data.client_zip }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Datos de la instalación -->
+            <div class="section">
+                <h2>Datos instalación:</h2>
+                <table class="data-table">
+                    <tr>
+                        <td class="label">Dirección:</td>
+                        <td class="value">{{ project_data.lift_address }}</td>
+                        <td class="label-right"></td>
+                        <td class="value-right"></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Localidad:</td>
+                        <td class="value">{{ project_data.lift_city }}</td>
+                        <td class="label-right">C.P:</td>
+                        <td class="value-right">{{ project_data.lift_zip }}</td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <!-- Texto introductorio -->
+            <div class="intro-text">
+                <p>Según el Real Decreto 355/2024 del 2 de abril de 2024 que regula la puesta en servicio, modificación, mantenimiento e inspección de los ascensores, así como el incremento de la seguridad del parque de ascensores existente, en esta instalación se ha modificado:</p>
+            </div>
+
+            <!-- Lista de modificaciones -->
+            <div class="modifications">
+                <table class="modifications-table">
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '1' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="carga-nominal">Carga nominal</label>
+                            </div>
+                        </td>
+                        <td class="modification-item"></td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '2' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="velocidad-nominal">Velocidad nominal</label>
+                            </div>
+                        </td>
+                        <td class="modification-item"></td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '3' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="masa-cabina">Masa de la cabina</label>
+                            </div>
+                        </td>
+                        <td class="modification-item"></td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '4' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="recorrido-paradas">Recorrido o número de paradas</label>
+                            </div>
+                        </td>
+                        <td class="modification-item"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item" style="padding-left: 0;">
+                            <span>y/o se han sustituido:</span>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '16' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label>Dispositivo de bloqueo o retén</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '5' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="dispositivo-enclavamiento">Dispositivo de enclavamiento</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '17' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="piston">Pistón</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">  
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '6' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="sistema-control">Sistema de control</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '18' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="valvula-sobrepresion">Válvula de sobre-presión</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '7' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="guias">Guías</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '19' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="valvula-paracaidas">Válvula paracaídas</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '8' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="tipo-puerta">Tipo de puerta</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '20' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="reductor-caudal">Reductor de caudal</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '9' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="incremento-puertas">Incremento del nº de puertas</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '21' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="disp-proteccion-subida">Disp. protección contra sobre-velocidad en subida</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '10' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="maquina">Máquina</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '22' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="disp-mecanico-detener">Dispositivo mecánico para detener la cabina</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '11' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="polea-tractora">Polea tractora</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '23' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="plataforma">Plataforma</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '12' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="limitador-velocidad">Limitador de velocidad</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '24' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="disp-mecanico-bloquear">Dispositivo mecánico para bloquear la cabina</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '13' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="amortiguadores">Amortiguadores</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '25' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="instalaciones-auxiliares">Instalaciones auxiliares</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '14' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="paracaidas">Paracaídas</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content">
+                                <div class="custom-checkmark">
+                                    {% if '26' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="disp-maniobras-emergencia">Disp. para maniobras de emergencia y ensayos</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="modification-item">
+                            <div class="modification-item-content" style="display: flex; align-items: start; ">
+                                <div class="custom-checkmark">
+                                    {% if '15' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="proteccion-movimientos">Protección contra movimientos incontrolados</label>
+                            </div>
+                        </td>
+                        <td class="modification-item">
+                            <div class="modification-item-content" style="display: flex; align-items: start; ">
+                                <div class="custom-checkmark">
+                                    {% if '27' in project_data.mod_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="disp-mecanico-impedir">Dispositivo mecánico para impedir el movimiento de la cabina</label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Declaración de la empresa -->
+        <div class="page-2 new-page">
+            <div class="declaration-section">
+                <table class="declaration-header">
+                    <tr>
+                        <td class="declaration-title">
+                            <strong>DECLARACIÓN DE LA EMPRESA</strong>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="declaration-data">
+                    <tr>
+                        <td class="declaration-label">Modelo:  </td>
+                        <td class="declaration-value">Ascensor sin modelo</td>
+                        <td class="declaration-label-right">Carga útil:</td>
+                        <td class="declaration-value-right">{{ project_data.nominal_load }} kg</td>
+                    </tr>
+                    <tr>
+                        <td class="declaration-label">Año:</td>
+                        <td class="declaration-value"></td>
+                        <td class="declaration-label-right">Nº de personas:</td>
+                        <td class="declaration-value-right">{{ project_data.passengers }}</td>
+                    </tr>
+                    <tr>
+                        <td class="declaration-label"></td>
+                        <td class="declaration-value"></td>
+                        <td class="declaration-label-right">Nº de paradas:</td>
+                        <td class="declaration-value-right">{{ project_data.stops }}</td>
+                    </tr>
+                    <tr>
+                        <td class="declaration-label">Dirección Instalación:</td>
+                        <td class="declaration-value">{{ project_data.lift_address }}</td>
+                        <td class="declaration-label-right">Recorrido:</td>
+                        <td class="declaration-value-right">{{ project_data.travel }}</td>
+                    </tr>
+                    <tr>
+                        <td class="declaration-label">Localidad</td>
+                        <td class="declaration-value">{{ project_data.lift_city }}</td>
+                        <td class="declaration-label-right">Cod. Postal:</td>
+                        <td class="declaration-value-right">{{ project_data.lift_zip }}</td>
+                    </tr>
+                </table>
+
+                <p class="declaration-text">
+                    Según el reglamento de tenimiento de ascensores vigente la empresa mantenedora declarara que:
+                </p>
+
+                <table class="declaration-process">
+                    <tr>
+                        <td class="modifications-done">
+                            - Se ha llevado a cabo la modificación de:
+                            <span style="font-weight: bold;">
+                                {% for modification in project_data.modification_types %}
+                                    {{ modification.label }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="norms-applied">
+                            - Cumpliendo con las normativas:   
+                            <span style="font-weight: bold;">
+                                {% for norm in project_data.applicable_norms %}
+                                    {{ norm.label }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="legalization-process">
+                            - Y siguiendo el proceso de legalización:
+                            <span></span>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Anexos -->
+                <table class="annexes">
+                    <tr>
+                        <td class="annex">
+                            <div class="annex-content">
+                                <div class="custom-checkmark">
+                                    {% if '1' in project_data.process_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="anexo-i">ANEXO I</label>
+                            </div>
+                        </td>
+                        <td class="annex">
+                            <div class="annex-content">
+                                <div class="custom-checkmark">
+                                    {% if '2' in project_data.process_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="anexo-iii">ANEXO III</label>
+                            </div>
+                        </td>
+                        <td class="annex">
+                            <div class="annex-content">
+                                <div class="custom-checkmark">
+                                    {% if '3' in project_data.process_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="anexo-iv">ANEXO IV</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="annex-arrow">
+                            <div class="vertical-arrow"></div>
+                        </td>
+                        <td class="annex-arrow">
+                            <div class="vertical-arrow"></div>
+                        </td>
+                        <td class="annex-arrow">
+                            <div class="vertical-arrow"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="annex">
+                            <div class="annex-content">
+                                <div class="custom-checkmark">
+                                    {% if '1' in project_data.process_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="anexo-ii">ANEXO II</label>
+                            </div>
+                        </td>
+                        <td class="annex">
+                            <div class="annex-content">
+                                <div class="custom-checkmark">
+                                    {% if '2' in project_data.process_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="anexo-iii">ANEXO III</label>
+                            </div>
+                        </td>
+                        <td class="annex">
+                            <div class="annex-content">
+                                <div class="custom-checkmark">
+                                    {% if '3' in project_data.process_codes %}
+                                    <div class="custom-checkmark-checked">✓</div>
+                                    {% endif %}
+                                </div>
+                                <label for="anexo-iv">ANEXO IV</label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="legalization-process-on">
+                    <tr>
+                        <td class="annexOne&Two">
+                            <span>- Examen de tipo de modificación importante:</span>
+                            <span>{{ project_data.exam_type }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="annexThree">
+                            <span>- Organismo de control de la V.U:</span>
+                            <span>{{ project_data.oca }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="annexFour">
+                            <span>- Sistema de gestión de la calidad certificado:</span>
+                            <span>{{ project_data.QMS }}</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="page-3 new-page technical-sheet">
+            <!-- Ficha técnica -->
+            <div class="technical-sheet">
+                <table class="technical-header">
+                    <tr>
+                        <td class="technical-title">
+                            <strong>FICHA TÉCNICA</strong>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Datos de la instalación -->
+                <table class="technical-table">
+                    <tr class="row-section-title">
+                        <td colspan="6" class="section-title">DATOS DE LA INSTALACIÓN</td>
+                    </tr>
+                    <tr>
+                        <td class="tech-label" colspan="6">
+                            <span>Dirección:</span>
+                            <span>{{ project_data.lift_address }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tech-label" colspan="4">
+                            <span>Localidad:</span>
+                            <span>{{ project_data.lift_city }}</span>
+                        </td>
+                        <td class="tech-label" colspan="2">
+                            <span>Cod. Postal:</span>
+                            <span>{{ project_data.lift_zip }}</span>
+                        </td>
+                    </tr>
+                    <tr class="row-section-title">
+                        <td colspan="6" class="section-title">DATOS TÉCNICOS</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tech-item">
+                            <span>Carga Nom.:</span>
+                            <span>{{ project_data.nominal_load }} kg</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Velocidad Nom.:</span>
+                            <span>{{ project_data.speed }} m/s</span>
+                        </td>
+                        <td colspan="2" rowspan="3" class="tech-item">
+                            <span>Cuarto máquina:</span>
+                            <span>{% if project_data.machine_room == 'Arriba' %}
+                                    En la parte superior del hueco
+                                    {% elif project_data.machine_room == 'Abajo' %}
+                                    En la parte inferior del hueco
+                                    {% elif project_data.machine_room == 'Lateral' %}
+                                    En la parte lateral del hueco
+                                    {% elif project_data.machine_room == 'Sin cuarto' %}
+                                    Sin cuarto de máquinas
+                                    {% else %}
+                                    {{ project_data.machine_room }}
+                                    {% endif %}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tech-item">
+                            <span>Nº pasajeros:</span>
+                            <span>{{ project_data.passengers }}</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Sist. de control:</span>
+                            <span>{{ project_data.control_system }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tech-item">
+                            <span>Nº paradas:</span>
+                            <span>{{ project_data.stops }}</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Tensión Nom.:</span>
+                            <span>{{ project_data.nominal_tension }} V</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tech-item">
+                            <span>Recorrido:</span>
+                            <span>{{ project_data.travel }} m</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Potencia Nom.:</span>
+                            <span>{{ project_data.nominal_power }} kW</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tech-item">
+                            <span>Nº cables:</span>
+                            <span>{{ project_data.num_cable }}</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Intensidad Nom.:</span>
+                            <span>{{ project_data.nominal_intensity }} A</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Tipo Hueco:</span>
+                            <span>Obra</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tech-item">
+                            <span>Diám. cables:</span>
+                            <span>{{ project_data.cable_diameter }} mm</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Tiro:</span>
+                            <span>{{ project_data.ratio }}</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Tipo de puerta:</span>
+                            <span>{{ project_data.door_type }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tech-item">
+                            <span>Masa cabina:</span>
+                            <span>{{ project_data.cab_mass }} kg</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Guías Cab.:</span>
+                            <span>{{ project_data.cab_rails }}</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Dim. cabina:</span>
+                            <span>{{ project_data.cab_dimensions }} mm</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tech-item">
+                            <span>Masa Ctpo:</span>
+                            <span>{{ project_data.cw_mass }} kg</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Guías Ctpo.:</span>
+                            <span>{{ project_data.cw_rails }}</span>
+                        </td>
+                        <td colspan="2" class="tech-item">
+                            <span>Luz de puerta:</span>
+                            <span>{{ project_data.door_size }} mm</span>
+                        </td>   
+                    </tr>
+                </table>
+
+                <!-- Componentes de seguridad -->
+                <table class="safety-components">
+                    <tr>
+                        <td colspan="5" class="section-title">COMPONENTES DE SEGURIDAD</td>
+                        <td colspan="4" class="section-subtitle">Id. del fabricante / Nº cert. CE de conformidad / Nº identificación del O.N</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="safety-label">Dispositivo de bloqueo de las puertas de rellano</td>
+                        <td colspan="4" class="safety-value">
+                            {% if project_data.locking_device1 %}
+                            {{ project_data.locking_device1 }} <br> {{ project_data.locking_device2 }}
+                            {% else %}
+                            {{ project_data.locking_device2 }}
+                            {% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="safety-label">Dispositivo para prevenir el ascenso o caída incontrolada de la cabina</td>
+                        <td colspan="4" class="safety-value">
+                            {% if project_data.cab_parachute %}
+                            {{ project_data.cab_parachute }} <br> {{ project_data.machine_brake }}
+                            {% else %}
+                            {{ project_data.machine_brake }}
+                            {% endif %}</td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="safety-label">Dispositivo para prevenir el ascenso o caída incontrolada del contrapeso</td>
+                        <td colspan="4" class="safety-value">{{ project_data.cw_parachute }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="safety-label">Limitador de velocidad</td>
+                        <td colspan="4" class="safety-value">
+                            {% if project_data.cab_speed_governor %}
+                            {{ project_data.cab_speed_governor }} <br> {{ project_data.cw_speed_governor }}
+                            {% else %}
+                            {{ project_data.cw_speed_governor }}
+                            {% endif %}</td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="safety-label">Dispositivo de acumulación de energía</td>
+                        <td colspan="4" class="safety-value">
+                            {% if project_data.cab_buffer %}
+                            {{ project_data.cab_buffer }} <br> {{ project_data.cw_buffer }}
+                            {% else %}
+                            {{ project_data.cw_buffer }}
+                            {% endif %}</td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="safety-label">Circuitos de seguridad con componentes electrónicos programables</td>
+                        <td colspan="4" class="safety-value">{{ project_data.safety_circuit }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" rowspan="3" class="safety-label">Protección del movimiento incontrolado de la cabina (A3)</td>
+                        <td colspan="1" class="safety-label">Detección</td>
+                        <td colspan="4" class="safety-value">{{ project_data.ucm_detect }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="1" class="safety-label">Actuación</td>
+                        <td colspan="4" class="safety-value">{{ project_data.ucm_act }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="1" class="safety-label">Parada</td>
+                        <td colspan="4" class="safety-value">{{ project_data.ucm_stop }}</td>
+                    </tr>
+                </table>
+
+                <!-- Observaciones -->
+                <table class="observations">
+                    <tr>
+                        <td class="obs-title">OBSERVACIONES</td>
+                    </tr>
+                    <tr>
+                        <td class="obs-content">
+                            <br><br><br>
+                        </td>
+                    </tr>
+                </table>
+        </div>
+    </div>
+</body>
+</html>

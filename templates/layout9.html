@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <link href="/static/multi-select.css" rel="stylesheet">
+        <script src="/static/multi-select.js"></script>
+
+        <link href="/static/single-select.css" rel="stylesheet">
+        <script src="/static/single-select.js"></script>
+
+        <link href="/static/single-select_input_text.css" rel="stylesheet">
+        <script src="/static/single-select_input_text.js"></script>
+
+        <link rel="icon" href="/static/Doculift_Logo1_test1-1.png" type="image/png" sizes="48x48">
+        <link href="/static/styles.css" rel="stylesheet">
+
+        <title>DocuLift</title>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                //Reset add project alert when closing project modal
+                document.addEventListener('click', function(e) {
+                    if (e.target && e.target.getAttribute('data-action') === 'close-alert') {
+                        hideAddprojectAlert();
+                    }
+                });
+
+                //Reset delete project alert when closing delete project modal
+                document.addEventListener('click', function(e) {
+                    if (e.target && e.target.getAttribute('data-action') === 'close-deleteproject-alert') {
+                        hideDeleteprojectAlert();
+                    }
+                });
+
+                // Initialize global object to store component instances 
+                // This allows us to populate the components with data from the server when editing a project
+                window.multiSelectInstances = window.multiSelectInstances || {};
+                window.singleSelectInstances = window.singleSelectInstances || {};
+                window.singleSelectInputTextInstances = window.singleSelectInputTextInstances || {};
+                
+                // Initialize multi-select components
+                const ModificationTypes = new MultiSelect('ModificationTypes', {
+                    placeholder: 'Selecciona opciones...',
+                    searchable: true,
+                    maxSelection: null,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                 const AplicableNorms = new MultiSelect('AplicableNorms', {
+                    placeholder: 'Selecciona opciones...',
+                    searchable: true,
+                    maxSelection: null,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                 // Store instances in global object for later use
+                 window.multiSelectInstances['ModificationTypes'] = ModificationTypes;
+                 window.multiSelectInstances['AplicableNorms'] = AplicableNorms;
+
+                 // Initialize single-select component
+                 const LegalizationProcess = new SingleSelect('LegalizationProcess', {
+                    placeholder: 'Selecciona opciones...',
+                    searchable: false,
+                    onChange: (selected) => {
+                        // The legalization process chosen in this single-select component is used to show/hide the legalization process form field
+                        const legalizationProcessForms = document.querySelectorAll('.legalization-process-form');
+                        
+                        // Hide all legalization process form fields
+                        for (let j = 0; j < legalizationProcessForms.length; j++) {
+                            legalizationProcessForms[j].style.display = 'none';
+                        }
+
+                        // Show the form field corresponding to the selected process (exam type, OCA, quality management system)
+                        if (selected !== null) {
+                            if (selected === '1') {1
+                                document.getElementById('examType').parentElement.style.display = 'block';
+                            } else if (selected === '2') {
+                                document.getElementById('oca').parentElement.style.display = 'block';
+                            } else if (selected === '3') {
+                                document.getElementById('qualityManagementSystem').parentElement.style.display = 'block';
+                            }
+                        }
+                    }
+                 });
+
+                // Store instance in global object for later use
+                window.singleSelectInstances['LegalizationProcess'] = LegalizationProcess;
+
+                // Initialize single-select-input-text components
+                
+                const lockingDevice1 = new SingleSelectInputText('lockingDevice1', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: null,
+                    onChange: (selected) => {
+                    }
+                });
+
+                const lockingDevice2 = new SingleSelectInputText('lockingDevice2', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: null,
+                    onChange: (selected) => {
+                    }
+                });
+
+                const machineBrake = new SingleSelectInputText('machineBrake', {
+                    placeholder: 'Selecciona opciones...',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                }); 
+                const cab_parachute = new SingleSelectInputText('cab_parachute', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const cw_parachute = new SingleSelectInputText('cw_parachute', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const cab_speedGovernor = new SingleSelectInputText('cab_speedGovernor', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const cw_speedGovernor = new SingleSelectInputText('cw_speedGovernor', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const cab_buffer = new SingleSelectInputText('cab_buffer', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const cw_buffer = new SingleSelectInputText('cw_buffer', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const safetyCircuit = new SingleSelectInputText('safetyCircuit', {
+                    placeholder: 'Selecciona opciones...',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const ucmDETECT = new SingleSelectInputText('ucmDETECT', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const ucmACT = new SingleSelectInputText('ucmACT', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                });
+                const ucmSTOP = new SingleSelectInputText('ucmSTOP', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                 const cableDiameter = new SingleSelectInputText('cableDiameter', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                const controlSystem = new SingleSelectInputText('controlSystem', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                const nominalTension = new SingleSelectInputText('nominalTension', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                const ratio = new SingleSelectInputText('ratio', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                const cabRails = new SingleSelectInputText('cabRails', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                const cwRails = new SingleSelectInputText('cwRails', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                const machineRoom = new SingleSelectInputText('machineRoom', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                const doorType = new SingleSelectInputText('doorType', {
+                    placeholder: '',
+                    searchable: true,
+                    maxSelection: 1,
+                    onChange: (selected) => {
+                    }
+                 });
+
+                // Store instances in global object for later use
+
+                 window.singleSelectInputTextInstances['lockingDevice1Input'] = lockingDevice1;
+                 window.singleSelectInputTextInstances['lockingDevice2Input'] = lockingDevice2;
+                 window.singleSelectInputTextInstances['machineBrakeInput'] = machineBrake;
+                 window.singleSelectInputTextInstances['cabParachuteInput'] = cab_parachute;
+                 window.singleSelectInputTextInstances['cwParachuteInput'] = cw_parachute;
+                 window.singleSelectInputTextInstances['cabSpeedGovernorInput'] = cab_speedGovernor;
+                 window.singleSelectInputTextInstances['cwSpeedGovernorInput'] = cw_speedGovernor;
+                 window.singleSelectInputTextInstances['cabBufferInput'] = cab_buffer;
+                 window.singleSelectInputTextInstances['cwBufferInput'] = cw_buffer;
+                 window.singleSelectInputTextInstances['safetyCircuitInput'] = safetyCircuit;
+                 window.singleSelectInputTextInstances['ucmDETECTInput'] = ucmDETECT;
+                 window.singleSelectInputTextInstances['ucmACTInput'] = ucmACT;
+                 window.singleSelectInputTextInstances['ucmSTOPInput'] = ucmSTOP;
+                 window.singleSelectInputTextInstances['cableDiameterInput'] = cableDiameter;
+                 window.singleSelectInputTextInstances['controlSystemInput'] = controlSystem;
+                 window.singleSelectInputTextInstances['nominalTensionInput'] = nominalTension;
+                 window.singleSelectInputTextInstances['ratioInput'] = ratio;
+                 window.singleSelectInputTextInstances['cabRailsInput'] = cabRails;
+                 window.singleSelectInputTextInstances['cwRailsInput'] = cwRails;
+                 window.singleSelectInputTextInstances['machineRoomInput'] = machineRoom;
+                 window.singleSelectInputTextInstances['doorTypeInput'] = doorType;
+
+
+                
+                 //Tab Navigation buttons setup
+                const tabButtonsAdd = document.querySelectorAll('#tabButtons button');
+
+                for (let i = 0; i < tabButtonsAdd.length; i++){
+                    tabButtonsAdd[i].addEventListener('click', function(){
+                        // Remove active styling from all tab buttons
+                        const tabButtonsRemove = document.querySelectorAll('#tabButtons button');
+                        for(let j = 0; j < tabButtonsRemove.length; j++) {
+                            tabButtonsRemove[j].classList.remove('active');
+                            tabButtonsRemove[j].style.backgroundColor = '';
+                            tabButtonsRemove[j].style.color = '';
+                            tabButtonsRemove[j].style.borderColor = '';
+                        }
+
+                        // Add active style to the tab button of the clicked tab pane
+                        tabButtonsAdd[i].classList.add('active');
+                        tabButtonsAdd[i].style.backgroundColor = '#027373';
+                        tabButtonsAdd[i].style.color = '#fff';
+                        tabButtonsAdd[i].style.borderColor = '#027373';
+
+                        // Hide all tab panes
+                        const tabpane = document.querySelectorAll('.tab-pane');
+                        for (let j = 0; j < tabpane.length; j++)    {
+                            tabpane[j].classList.remove('show', 'active');
+                        }
+
+                        // Show the tab pane that matches the clicked button
+                        const tabId = tabButtonsAdd[i].getAttribute('data-tab');
+                        document.getElementById(tabId).classList.add('show', 'active');
+
+                        // Show or hide navigation buttons based on current tab pane
+                        if (tabId === "installation")  {
+                            document.getElementById('previousBtn').style.display = 'none';
+                            document.getElementById('nextBtn').style.display = 'block';
+                            document.getElementById('printBtn').style.display = 'none';
+                        } else if (tabId === "certificate") {
+                            document.getElementById('nextBtn').style.display = 'none';
+                            document.getElementById('previousBtn').style.display = 'block';
+                            document.getElementById('printBtn').style.display = 'block';
+                        } else {
+                            document.getElementById('previousBtn').style.display = 'block';
+                            document.getElementById('nextBtn').style.display = 'block';
+                            document.getElementById('printBtn').style.display = 'none';
+                        }
+                    });
+                }
+
+                // Navigation buttons setup (Previous/Next)
+                const navButtons = document.querySelectorAll('.nav-btn');
+
+                for (let i = 0; i < navButtons.length; i++) {
+                    navButtons[i].addEventListener('click', function(){
+                        // Get the data-action attribute of the navigation button clicked (previous or next)
+                        const action = navButtons[i].getAttribute('data-action');
+
+                        // Get all tab panes
+                        const tabpanes = document.querySelectorAll('.tab-pane');
+                        
+                        // Find the currently active tab content
+                        const currentTabpane = document.querySelector('.tab-pane.active');
+                        if (!currentTabpane) return; 
+                        
+                        // Get the id (text) of the current tab pane
+                        const currentTabId = currentTabpane.id;
+                        
+                        // Find the index (position) of the current tab from its id from the array of tab panes
+                        let currentIndex = 0;
+                        for (let j = 0; j < tabpanes.length; j++) {
+                            if (tabpanes[j].id === currentTabId) {
+                                currentIndex = j;
+                                break;
+                            }
+                        }
+                        
+                        // Hide the current tab content
+                        currentTabpane.classList.remove('show', 'active');
+                        
+                        // Remove active styling from the current tab button
+                        const currentTabButton = document.querySelector(`[data-tab="${currentTabId}"]`);
+                        if (currentTabButton) {
+                            currentTabButton.classList.remove('active');
+                            currentTabButton.style.backgroundColor = '';
+                            currentTabButton.style.color = '';
+                            currentTabButton.style.borderColor = '';
+                        }
+
+                        // If the previous button is clicked
+                        if (action === 'previous') {
+                            // If we're not on the first tab
+                            if (currentIndex > 0) {
+                                // Get the previous tab pane
+                                const previousTabpane = tabpanes[currentIndex - 1];
+
+                                // Show the previous tab pane
+                                previousTabpane.classList.add('show', 'active');
+
+                                // Get the id of the previous tab pane
+                                const previousTabId = previousTabpane.id;
+
+                                // Get the tab button that corresponds to the previous tab pane
+                                const previousTabButton = document.querySelector(`[data-tab="${previousTabId}"]`);
+                                if (previousTabButton) {
+                                    // Add active style to the tab button of previous tab pane
+                                    previousTabButton.classList.add('active');
+                                    previousTabButton.style.backgroundColor = '#027373';
+                                    previousTabButton.style.color = '#fff';
+                                    previousTabButton.style.borderColor = '#027373';
+                                }
+                                
+                                // Update navigation button visibility
+                                document.getElementById('previousBtn').style.display = currentIndex - 1 === 0 ? 'none' : 'block';
+                                document.getElementById('nextBtn').style.display = 'block';
+                                document.getElementById('printBtn').style.display = 'none';
+                            }
+
+                        // If the next button is clicked
+                        } else if (action === 'next') {
+                            // If we're not on the last tab
+                            if (currentIndex < tabpanes.length - 1) {
+                                // Get the next tab pane
+                                const nextTabpane = tabpanes[currentIndex + 1];
+                                nextTabpane.classList.add('show', 'active');
+
+                                // Get the id of the next tab pane
+                                const nextTabId = nextTabpane.id;
+
+                                // Get the tab button that corresponds to the next tab pane
+                                const nextTabButton = document.querySelector(`[data-tab="${nextTabId}"]`);
+                                if (nextTabButton) {
+                                    // Add active style to the tab button of next tab pane
+                                    nextTabButton.classList.add('active');
+                                    nextTabButton.style.backgroundColor = '#027373';
+                                    nextTabButton.style.color = '#fff';
+                                    nextTabButton.style.borderColor = '#027373';
+                                }
+
+                                // Update navigation button visibility
+                                document.getElementById('nextBtn').style.display = currentIndex + 1 === tabpanes.length - 1 ? 'none' : 'block';
+                                document.getElementById('previousBtn').style.display = 'block';
+                                document.getElementById('printBtn').style.display = currentIndex + 1 === tabpanes.length - 1 ? 'block' : 'none';
+                            }
+                        }
+                    });
+                }
+            /**
+             * Fetch project data from the server by project ID
+             * Used when editing an existing project to populate the project modal forms with the server project data
+             * @param {string} projectId - The ID of the project to retrieve
+             * @returns {Promise<Object>} Project data or error object
+             */
+            async function getProject(projectId) {
+                try {
+                    let response = await fetch('/get-project', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({projectId})
+                    });
+
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error:', error);
+                    return { success: false, message: 'Error de conexión' };
+                }
+            }
+            
+            /**
+             * Validate a single form field by sending it to the server
+             * Server performs validation and returns success/error status
+             * @param {string} fieldName - The name of the field to validate
+             * @param {string|Array} value - The value(s) to validate
+             * @param {string} projectId - The ID of the project to validate the field for if editing an existing project
+             * @returns {Promise<Object>} Validation result with success status and error message if any
+             */
+            async function validateField(fieldName, value) {
+                try {
+                    // Get project ID if editing an existing project (for context-aware validation)
+                    const idInput = document.querySelector('#installation-form input[name="id"]');
+                    const projectId = idInput?.value?.trim();
+
+                    const payload = { field: fieldName, value: value };
+                    // Include project_id only if editing (allows server to check for duplicates)
+                    if (projectId) payload.project_id = projectId;
+
+                    const response = await fetch('/validate-field', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                    });
+                
+                
+                const data = await response.json();
+                return data;
+                } catch (error) {
+                console.error('Error:', error);
+                return { success: false, message: 'Error de conexión' };
+                }
+            }
+
+            /**
+             * Display or hide field validation error messages
+             * Shows animated error message below the field with visual feedback
+             * @param {string} fieldId - The ID of the form field
+             * @param {string} message - Error message to display (empty string to clear error)
+             */
+            function showFieldError(fieldId, message) {
+                const field = document.getElementById(fieldId);                    // Get the input field
+                const errorElement = document.getElementById(fieldId + '-error'); // Get the error message container
+                const label = document.querySelector(`label[for="${fieldId}"]`);  // Get the field's label
+                
+                // If there's an error message to show
+                if (message) {
+                    // Avoid showing the same error message again (prevents flickering)
+                    if (field.classList.contains('invalid') && message === errorElement.textContent.trim()) {
+                        return; 
+                    }
+                
+                    field.classList.add('invalid');           
+                    if (label) label.classList.add('text-danger');
+                
+                    errorElement.innerHTML = `
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span class="msg"></span>
+                    `;
+                    const msg = errorElement.querySelector('.msg');
+                    msg.textContent = message || 'Ha ocurrido un error';
+                    
+                    errorElement.style.display = 'block';
+                    errorElement.style.opacity = '0';           
+                    errorElement.style.transform = 'translateY(-10px)'; 
+                    errorElement.style.marginTop = '0';         
+                    errorElement.style.height = '0';            
+                    errorElement.style.overflow = 'hidden';     
+                    
+                    errorElement.offsetHeight;
+                    
+                    setTimeout(() => {
+                    errorElement.style.transition = 'all 0.2s ease';
+                    errorElement.style.opacity = '1';         
+                    errorElement.style.transform = 'translateY(0)'; 
+                    errorElement.style.marginTop = '0.5rem';  
+                    errorElement.style.height = 'auto';       
+                    }, 150);
+                
+                } else {
+                // No error message - clear error state
+                field.classList.remove('invalid');           // Remove invalid styling
+                if (label) label.classList.remove('text-danger');       // Remove red label color
+                errorElement.innerHTML = ``; 
+            }
+        }
+            /**
+             * Display alert message in the add/edit project modal
+             * Shows success or error messages with appropriate icons
+             * @param {string} message - The message to display
+             */
+            function showAddprojectAlert(message) {
+                const alertElement = document.getElementById('addproject-alert');
+                if (alertElement) {
+                    alertElement.classList.remove('d-none');
+                    // Special styling for connection errors
+                    if (message === 'Error de conexión') {
+                        alertElement.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-wifi-off text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">Error de conexión</div>
+                            </div>
+                            <button type="button" class="btn-close" data-action="close-alert" aria-label="Cerrar"></button>
+                        </div>
+                    `;
+                    } else {
+                        alertElement.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold"></div>
+                            </div>
+                            <button type="button" class="btn-close" data-action="close-alert" aria-label="Cerrar"></button>
+                        </div>
+                        `;
+                        const msgEl = alertElement.querySelector('.fw-bold');
+                        if (msgEl) msgEl.textContent = message || 'Ha ocurrido un error';
+                    }
+                }
+                alertElement.classList.add('show');
+            }
+
+            /**
+             * Display alert message in the delete project modal
+             * Shows success or error messages with appropriate icons
+             * @param {string} message - The message to display
+             */
+            function showDeleteprojectAlert(message) {
+                const alertElement = document.getElementById('deleteproject-alert');
+                if (alertElement) {
+                    alertElement.classList.remove('d-none');
+                    if (message === 'Error de conexión') {
+                        alertElement.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-wifi-off text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">Error de conexión</div>
+                            </div>
+                            <button type="button" class="btn-close" data-action="close-deleteproject-alert" aria-label="Cerrar"></button>
+                        </div>
+                    `;
+                    } else {
+                        alertElement.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold"></div>
+                            </div>
+                            <button type="button" class="btn-close" data-action="close-deleteproject-alert" aria-label="Cerrar"></button>
+                        </div>
+                        `;
+                        const msgEl = alertElement.querySelector('.fw-bold');
+                        if (msgEl) msgEl.textContent = message || 'Ha ocurrido un error';
+                    }
+                }
+                alertElement.classList.add('show');
+            }
+
+            /**
+             * Hide the add/edit project alert
+             */
+            function hideAddprojectAlert() {
+                const alertElement = document.getElementById('addproject-alert');
+                if (alertElement) {
+                    alertElement.classList.add('d-none');
+                    alertElement.classList.remove('show');
+                    setTimeout(() => {
+                        alertElement.innerHTML = '';
+                    }, 300);
+                    }
+            }
+
+            /**
+             * Hide the delete project alert
+             */
+            function hideDeleteprojectAlert() {
+                const alertElement = document.getElementById('deleteproject-alert');
+                if (alertElement) {
+                    alertElement.classList.add('d-none');
+                    alertElement.classList.remove('show');
+                    setTimeout(() => {
+                        alertElement.innerHTML = '';
+                    }, 300);
+                    }
+            }
+
+            /**
+             * Remove the empty state row from the projects table
+             * Called when a new project is added to the table
+             */
+            function removeEmptyStateRow() {
+                const emptyRow = document.getElementById('empty-row'); 
+                if (emptyRow) emptyRow.remove();
+            }
+
+            /**
+             * Add a new project row to the projects table
+             * Creates a new table row with project data and action buttons
+             * @param {Object} newProject - Project data object from server
+             */
+            function loadProjects(newProject) {
+                const projectsTable = document.getElementById('projects-table');
+                if (!projectsTable || !newProject) return;
+
+                const toText = v => (v == null ? '' : String(v));
+
+                removeEmptyStateRow();
+
+                const row = document.createElement('tr');
+                row.classList.add('project-row');
+                row.id = `project-${newProject.id}`;
+                row.innerHTML = `
+                    <td class="text-start fw-bold ps-5"></td>
+                    <td class="text-start fw-bold ps-5 font-monospace"></td>
+                    <td class="text-start ps-5"></td>
+                    <td class="text-start ps-5"></td>
+                    <td class="text-end pe-3">
+                        <div class="d-flex flex-row bd-highlight justify-content-end gap-1 opacity-0 action-buttons">
+                            <button type="button" class="btn btn-outline-secondary btn-sm bd-highlight" data-bs-toggle="modal" data-bs-target="#projectModal">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm btn-delete bd-highlight" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="bi bi-trash me-1"></i>Eliminar
+                            </button>
+                        </div>
+                    </td>
+                    `;
+                const cells = row.querySelectorAll('td');
+                cells[0].textContent = toText(newProject.updated_at || newProject.created_at);
+                cells[1].textContent = toText(newProject.order_number);
+                cells[2].textContent = toText(newProject.rae);
+                cells[3].textContent = toText(newProject.lift_address);
+
+                
+                const editBtn = cells[4].querySelector('button[data-bs-target="#projectModal"]');
+                const delBtn = cells[4].querySelector('button[data-bs-target="#deleteModal"]');
+                editBtn.dataset.projectId = String(newProject.id);
+                delBtn.dataset.projectId = String(newProject.id);
+
+                const firstElement = projectsTable.firstElementChild;
+                if (firstElement) {
+                    projectsTable.insertBefore(row, firstElement);
+                } else {
+                    projectsTable.appendChild(row);
+                }
+
+                row.style.backgroundColor = '#e6ffe6';
+                setTimeout(() => {
+                    row.style.transition = 'background-color 1s';
+                    row.style.backgroundColor = '';
+                }, 100);
+            }
+
+            /**
+             * Update an existing project row in the projects table
+             * If the row doesn't exist, creates a new one
+             * @param {Object} updatedProject - Updated project data object from server
+             */
+            function updateProjects(updatedProject) {
+                const projectsTable = document.getElementById('projects-table');
+                if(!projectsTable || !updatedProject) return;
+
+                const toText = v => (v == null ? '' : String(v));
+
+                // Try to find the existing row
+                let row = projectsTable.querySelector(`tr[id="project-${updatedProject.id}"]`);
+
+                if (!row) {
+                    // Row doesn't exist → create a new one (and remove empty row if present)
+                    removeEmptyStateRow();
+
+                    row = document.createElement('tr');
+                    row.classList.add('project-row');
+                    row.id = `project-${updatedProject.id}`;
+                    row.innerHTML = `
+                        <td class="text-start fw-bold ps-5"></td>
+                        <td class="text-start fw-bold ps-5 font-monospace"></td>
+                        <td class="text-start ps-5"></td>
+                        <td class="text-start ps-5"></td>
+                        <td class="text-end pe-3">
+                        <div class="d-flex flex-row bd-highlight justify-content-end gap-1 opacity-0 action-buttons">
+                            <button type="button" class="btn btn-outline-secondary btn-sm bd-highlight" data-bs-toggle="modal" data-bs-target="#projectModal">
+                            <i class="bi bi-pencil me-1"></i>Editar
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm btn-delete bd-highlight" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash me-1"></i>Eliminar
+                            </button>
+                        </div>
+                        </td>
+                    `;
+                    const cells = row.querySelectorAll('td');
+                    cells[0].textContent = toText(updatedProject.updated_at || updatedProject.created_at);
+                    cells[1].textContent = toText(updatedProject.order_number);
+                    cells[2].textContent = toText(updatedProject.rae);
+                    cells[3].textContent = toText(updatedProject.lift_address);
+
+                    const editBtn = cells[4].querySelector('button[data-bs-target="#projectModal"]');
+                    const delBtn = cells[4].querySelector('button[data-bs-target="#deleteModal"]');
+                    editBtn.dataset.projectId = String(updatedProject.id);
+                    delBtn.dataset.projectId = String(updatedProject.id);
+
+                    const firstElement = projectsTable.firstElementChild;
+                    if (firstElement) {
+                        projectsTable.insertBefore(row, firstElement);
+                    } else {
+                        projectsTable.appendChild(row);
+                    }
+
+                } else {
+                    row.innerHTML = `
+                        <td class="text-start fw-bold ps-5"></td>
+                        <td class="text-start fw-bold ps-5 font-monospace"></td>
+                        <td class="text-start ps-5"></td>
+                        <td class="text-start ps-5"></td>
+                        <td class="text-end pe-3">
+                        <div class="d-flex flex-row bd-highlight justify-content-end gap-1 opacity-0 action-buttons">
+                            <button type="button" class="btn btn-outline-secondary btn-sm bd-highlight" data-bs-toggle="modal" data-bs-target="#projectModal">
+                            <i class="bi bi-pencil me-1"></i>Editar
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm btn-delete bd-highlight" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash me-1"></i>Eliminar
+                            </button>
+                        </div>
+                        </td>
+                    `;
+                    const cells = row.querySelectorAll('td');
+                    cells[0].textContent = toText(updatedProject.updated_at || updatedProject.created_at);
+                    cells[1].textContent = toText(updatedProject.order_number);
+                    cells[2].textContent = toText(updatedProject.rae);
+                    cells[3].textContent = toText(updatedProject.lift_address);
+
+                    const editBtn = cells[4].querySelector('button[data-bs-target="#projectModal"]');
+                    const delBtn = cells[4].querySelector('button[data-bs-target="#deleteModal"]');
+                    editBtn.dataset.projectId = String(updatedProject.id);
+                    delBtn.dataset.projectId = String(updatedProject.id);
+
+                    const firstElement = projectsTable.firstElementChild;
+                    if (firstElement) {
+                        projectsTable.insertBefore(row, firstElement);
+                    } 
+                }
+
+                row.style.backgroundColor = '#e6ffe6';
+                setTimeout(() => {
+                row.style.transition = 'background-color 1s';
+                row.style.backgroundColor = '';
+                }, 100);
+
+            }
+
+            /**
+             * Remove a project row from the projects table with fade-out animation
+             * If no projects remain, shows the empty state message
+             * @param {string} projectId - The ID of the project to remove
+             */
+            function deleteProject(projectId) {
+                const row = document.querySelector(`tr[id="project-${projectId}"]`);
+                if (row) {
+                    // Fade out animation
+                    row.style.transition = 'opacity 0.5s';
+                    row.style.opacity = '0';
+
+                    setTimeout(() => {
+                    row.remove();
+
+                    // If no projects remain, add the empty state row
+                    const tbody = document.getElementById('projects-table');
+                    const stillProjects = tbody.querySelectorAll('.project-row').length > 0;
+                    if (!stillProjects) {
+                        const emptyRow = document.createElement('tr');
+                        emptyRow.id = "empty-row";
+                        emptyRow.innerHTML = '<td class="text-center text-muted" colspan="5">No hay proyectos todavía</td>';
+                        tbody.appendChild(emptyRow);
+                    }
+                    }, 500);
+                }    
+            }
+
+            /**
+             * Sanitize input values 
+             * Escapes HTML special characters before displaying user input
+             * @param {string} value - The value to sanitize
+             * @returns {string} Sanitized value safe for HTML display
+             */
+            function sanitizeInputValue(value) {
+                if (!value) return '';
+                
+                // Escape HTML characters for safe display
+                return value
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#x27;');
+            }
+
+            // Text input fields that require validation
+            // Format: { id: 'HTML element ID', name: 'server field name' }
+            const fieldsToValidate = [
+                { id: 'orderNumber', name: 'order_number'},
+                { id: 'rae', name: 'rae'},
+                { id: 'clientName', name: 'client_name'},
+                { id: 'clientNIF', name: 'client_nif'},
+                { id: 'clientAddress', name: 'client_address'},
+                { id: 'clientCity', name: 'client_city'},
+                { id: 'clientZip', name: 'client_zip'},
+                { id: 'liftAddress', name: 'lift_address'},
+                { id: 'liftCity', name: 'lift_city'},
+                { id: 'liftZip', name: 'lift_zip'}
+            ];
+
+            // Multi-select and single-select components that require validation
+            // Format: { id: 'container ID', field: 'input element ID', name: 'server field name' }
+            const selectsToValidate = [
+                { id: 'ModificationTypes', field: 'ModificationTypesInput' , name: 'modification_types'},
+                { id: 'AplicableNorms', field: 'AplicableNormsInput' , name: 'applicable_norms'},
+                { id: 'LegalizationProcess', field: 'LegalizationProcessInput' , name: 'legalization_process'}
+            ];
+
+            // Fields that don't require validation (optional fields)
+            // Format: { id: 'HTML element ID', name: 'server field name' }
+            const fieldsNotToValidate = [
+                { id: 'examType', name: 'exam_type'},
+                { id: 'oca', name: 'oca'},
+                { id: 'qualityManagementSystem', name: 'QMS'},
+                { id: 'nominalLoad', name: 'nominal_load'},
+                { id: 'speed', name: 'speed'},
+                { id: 'machineRoomInput', name: 'machine_room'},
+                { id: 'passengers', name: 'passengers'},
+                { id: 'controlSystemInput', name: 'control_system'},
+                { id: 'cabDimensions', name: 'cab_dimensions'},
+                { id: 'stops', name: 'stops'},
+                { id: 'nominalTensionInput', name: 'nominal_tension'},
+                { id: 'doorTypeInput', name: 'door_type'},
+                { id: 'travel', name: 'travel'},
+                { id: 'nominalPower', name: 'nominal_power'},
+                { id: 'doorSize', name: 'door_size'},
+                { id: 'numCable', name: 'num_cable'},
+                { id: 'nominalIntensity', name: 'nominal_intensity'},
+                { id: 'cableDiameterInput', name: 'cable_diameter'},
+                { id: 'ratioInput', name: 'ratio'},
+                { id: 'cabMass', name: 'cab_mass'},
+                { id: 'cabRailsInput', name: 'cab_rails'},
+                { id: 'cwMass', name: 'cw_mass'},
+                { id: 'cwRailsInput', name: 'cw_rails'},
+                { id: 'lockingDevice1Input', name: 'locking_device1'},
+                { id: 'lockingDevice2Input', name: 'locking_device2'},
+                { id: 'machineBrakeInput', name: 'machine_brake'},
+                { id: 'cabParachuteInput', name: 'cab_parachute'},
+                { id: 'cwParachuteInput', name: 'cw_parachute'},
+                { id: 'cabSpeedGovernorInput', name: 'cab_speed_governor'},
+                { id: 'cwSpeedGovernorInput', name: 'cw_speed_governor'},
+                { id: 'cabBufferInput', name: 'cab_buffer'},
+                { id: 'cwBufferInput', name: 'cw_buffer'},
+                { id: 'safetyCircuitInput', name: 'safety_circuit'},
+                { id: 'ucmDETECTInput', name: 'ucm_detect'},
+                { id: 'ucmACTInput', name: 'ucm_act'},
+                { id: 'ucmSTOPInput', name: 'ucm_stop'},
+            ];
+
+            // Track which select components are currently active (for validation purposes)
+            const isActiveSelects = new Array(selectsToValidate.length).fill(false);
+
+            /**
+             * Project Modal Event Handler
+             * Handles modal opening: resets forms, clears errors, loads project data if editing
+             */
+            const projectModal = document.getElementById('projectModal')
+            if (projectModal) {
+                // When modal is about to be shown
+                projectModal.addEventListener('show.bs.modal', async event => {
+                    // Get references to all form elements
+                    const installationform = document.getElementById('installation-form');
+                    const declarationform = document.getElementById('declaration-form');
+                    const technicalform = document.getElementById('technical-form');
+                    const certificateform = document.getElementById('certificate-form');
+
+                    // Reset all forms to clear previous data
+                    installationform.reset();
+                    declarationform.reset();
+                    technicalform.reset();
+                    certificateform.reset();
+        
+                    // Hide any previous alert messages
+                    hideAddprojectAlert();
+                    
+                    // Clear validation errors from all text input fields
+                    for ( let i = 0 ; i < fieldsToValidate.length ; i ++) {
+                        const element = document.getElementById(fieldsToValidate[i].id);
+                        const errorElement = document.getElementById(fieldsToValidate[i].id + '-error');
+                        const label = document.querySelector(`label[for="${fieldsToValidate[i].id}"]`);
+                        if(element) {
+                            element.classList.remove('invalid');
+                            if(label) label.classList.remove('text-danger');
+                            if(errorElement) errorElement.innerHTML = ``;
+                        }
+                    }
+
+                    // Clear validation errors and reset all select components
+                    for ( let i = 0; i < selectsToValidate.length; i++ ) {
+                        const cmpInput = document.getElementById(selectsToValidate[i].field);
+                        const errorElement = document.getElementById(selectsToValidate[i].field +'-error');
+                        const label = document.querySelector(`label[for="${selectsToValidate[i].id}"]`);
+                        isActiveSelects[i] = false;
+
+                        // Clear multi-select components
+                        if (window.multiSelectInstances && window.multiSelectInstances[selectsToValidate[i].id]) {
+                            window.multiSelectInstances[selectsToValidate[i].id].clearAll();
+                        }
+
+                        // Clear single-select components
+                        if (window.singleSelectInstances && window.singleSelectInstances[selectsToValidate[i].id]) {
+                            window.singleSelectInstances[selectsToValidate[i].id].removeText();
+                        }
+
+                        // Remove error styling
+                        if(cmpInput) {
+                            cmpInput.classList.remove('invalid');
+                            if (errorElement) errorElement.innerHTML = '';
+                            if (label) label.classList.remove('text-danger');
+                        }
+                    }
+
+                    // Update placeholders for single-select-input-text components
+                    for ( let i = 0; i < fieldsNotToValidate.length; i++ ) {
+                        if (window.singleSelectInputTextInstances && window.singleSelectInputTextInstances[fieldsNotToValidate[i].id]) {
+                            window.singleSelectInputTextInstances[fieldsNotToValidate[i].id].updatePlaceholder();
+                        }
+                    }
+
+                    // Reset tabs: Show first tab (installation) and hide others
+                    const panes = document.querySelectorAll('.tab-pane');
+                    panes.forEach(p => p.classList.remove('show', 'active'));
+                    const firstPane = document.getElementById('installation');
+                    if (firstPane) firstPane.classList.add('show', 'active');
+
+                    // Reset tab buttons: Remove active styling from all buttons
+                    const tabButtons = document.querySelectorAll('#tabButtons button');
+                    tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.backgroundColor = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                    });
+
+                    // Activate first tab button (installation)
+                    const firstBtn = document.querySelector('#tabButtons button[data-tab="installation"]') || tabButtons[0];
+                    if (firstBtn) {
+                    firstBtn.classList.add('active');
+                    firstBtn.style.backgroundColor = '#027373';
+                    firstBtn.style.color = '#fff';
+                    firstBtn.style.borderColor = '#027373';
+                    }
+
+                    // Reset navigation buttons
+                    const previousBtn = document.getElementById('previousBtn');
+                    const nextBtn = document.getElementById('nextBtn');
+                    const printBtn = document.getElementById('printBtn');
+                    if (previousBtn) previousBtn.style.display = 'none';
+                    if (nextBtn) nextBtn.style.display = 'block';
+                    if (printBtn) printBtn.style.display = 'none';
+
+                    // Get project ID from the button that triggered the modal
+                    const button = event.relatedTarget
+                    // Extract project ID from data attribute
+                    const projectId = button.getAttribute('data-project-id')
+                    // Get modal title element to update it
+                    const modalTitle = document.getElementById('projectModalLabel');
+
+                    // If projectId exists, we're editing an existing project
+                    if (projectId) {
+                        const input = projectModal.querySelector('input[name="id"]')
+                        if(input) {
+                            input.value = projectId
+                        }
+                        modalTitle.textContent = "Editar Documento";
+                        // Fetch project data from server
+                        const projectData = await getProject(projectId);
+                        if(projectData.success){
+
+                            // Populate text input fields with project data (sanitized for XSS prevention)
+                            for ( let i = 0 ; i < fieldsToValidate.length ; i ++) {
+                                const element = document.getElementById(fieldsToValidate[i].id);
+                                const fieldName = fieldsToValidate[i].name;
+                                if(element) {
+                                    const rawValue = projectData?.data?.[fieldName];
+                                    element.value = sanitizeInputValue(rawValue);
+                                }
+                            }
+
+                            // Populate select components (multi-select and single-select) with project data
+                            for (let i = 0; i < selectsToValidate.length; i++) {
+                                const cmpConteiner = document.getElementById(selectsToValidate[i].id);
+                                const checkedBoxList = cmpConteiner.querySelectorAll('input[type="checkbox"]');
+                                const fieldName = selectsToValidate[i].name;
+
+                                // Extract selected codes from project data
+                                const selectedCodes = projectData?.data?.[fieldName]?.map(item => item.code) || [];
+
+                                // Set values for multi-select components
+                                if (window.multiSelectInstances && window.multiSelectInstances[selectsToValidate[i].id]) {
+                                    window.multiSelectInstances[selectsToValidate[i].id].setValues(selectedCodes);
+                                }
+
+                                // Set value for single-select components (use first code)
+                                if (window.singleSelectInstances && window.singleSelectInstances[selectsToValidate[i].id]) {
+                                    window.singleSelectInstances[selectsToValidate[i].id].setValue(selectedCodes[0]);
+                                }
+                            }
+
+                            // Populate other fields (fields that don't require validation)
+                            for ( let i = 0; i < fieldsNotToValidate.length; i++ ) {
+
+                                const element = document.getElementById(fieldsNotToValidate[i].id);
+                                const fieldName = fieldsNotToValidate[i].name;
+                                if(element) {
+                                    const rawValue = projectData?.data?.[fieldName];
+                                    element.value = sanitizeInputValue(rawValue);
+
+                                    // if the field is a single-select-input-text component, update placeholder
+                                    if (window.singleSelectInputTextInstances && window.singleSelectInputTextInstances[fieldsNotToValidate[i].id]) {
+                                        window.singleSelectInputTextInstances[fieldsNotToValidate[i].id].updatePlaceholder();
+                                    }
+                                }
+                            }
+
+                        } else {
+                            event.preventDefault();
+                            console.error('Error:', projectData.message);
+                            return;
+                        }
+
+
+                    } else {
+                        // If projectId doesn't exist, we're creating a new project
+                        modalTitle.textContent = "Nuevo Documento";
+                        const input = projectModal.querySelector('input[name="id"]')
+                        if(input) {
+                            input.value = null;
+                        }
+                    }
+                })
+            }
+            /**
+             * Delete Modal Event Handler
+             * Handles modal opening: extracts project ID from the button that triggered it
+             */
+            const deleteModal = document.getElementById('deleteModal')
+            if(deleteModal){
+                // When delete modal is about to be shown
+                deleteModal.addEventListener('show.bs.modal', event => {
+                    hideDeleteprojectAlert();
+                    // Get the button that triggered the modal
+                    const button = event.relatedTarget
+                    // Extract project ID from data attribute
+                    const projectId = button.getAttribute('data-project-id')
+                    // Update delete modal input with the project ID to be deleted
+                    const input = deleteModal.querySelector('input[name="id"]')
+                    if(input) {
+                        input.value = projectId
+                    }
+                })
+            }
+
+            /**
+             * Delete Button Event Handler
+             * Sends delete request to server and removes project from table on success
+             */
+            const deleteButton = document.querySelector('.btn-modal-delete');
+            if(deleteButton) {
+                deleteButton.addEventListener('click', async function (event) {
+                const deleteForm = event.target.closest('.delete-form');
+                const input = deleteForm?.querySelector('input[name="id"]');
+                const projectId = input?.value?.trim();
+                
+                // Validate project ID exists
+                if (!projectId) {
+                    showDeleteprojectAlert('Solicitud inválida');
+                    return;
+                } 
+                        
+                // Disable button to prevent double-click
+                deleteButton.disable = true;
+                const formData = new FormData(deleteForm);
+
+                try {
+                    // Send delete request to server
+                    let response = await fetch('/delete-project', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    let data = await response.json();
+                            
+                    if (data.success) {
+                        // Success: Close modal and remove project from table
+                        const bsModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                        bsModal?.hide();
+                        hideDeleteprojectAlert();
+                        deleteProject(projectId);
+                            
+                    } else {
+                        // If there's an error, show error message
+                        showDeleteprojectAlert(data.message)
+                        deleteButton.disable = false;
+                        }
+                    } catch (error) {
+                        // If a network or other error occurs, show error message
+                        console.error('Error:', error);
+                        showDeleteprojectAlert('Error de conexión');
+                        deleteButton.disable = false;
+                    }
+                    
+                });
+            }
+
+            /**
+             * Save Button Event Handler
+             * Collects data from all forms, sends to server, and updates the projects table
+             */
+            const saveBtn = document.getElementById('saveBtn');
+            if(saveBtn){
+                saveBtn.addEventListener('click', async function(event) {
+                    event.preventDefault();
+                    // Prevent double-click submission
+                    if (saveBtn.disabled) return;
+
+                    // Disable button and show loading spinner
+                    saveBtn.disabled = true;
+                    const originalHTML = saveBtn.innerHTML;
+                    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Guardando...';
+                    
+                    try {
+                        // Create FormData object to collect all form data
+                        const allFormData = new FormData();
+                        
+                        // Collect data from installation form 
+                        const installationForm = document.getElementById('installation-form');
+                        if(installationForm) {
+                            const installationFormData = new FormData(installationForm);
+                            for (let [key, value] of installationFormData.entries()) {
+                            allFormData.append(key, value);
+                            }
+                        }
+                        
+                        // Collect data from declaration form 
+                        const declarationForm = document.getElementById('declaration-form');
+                        if(declarationForm) {
+                            const declarationFormData = new FormData(declarationForm);
+                            for (let [key, value] of declarationFormData.entries()) {
+                            allFormData.append(key, value);
+                            }
+                        }
+                        
+                        // Collect data from technical form
+                        const technicalForm = document.getElementById('technical-form');
+                        if(technicalForm) {
+                            const technicalFormData = new FormData(technicalForm);
+                            for (let [key, value] of technicalFormData.entries()) {
+                            console.log(`${key}:`, value);
+                            allFormData.append(key, value);
+                            }
+                        }
+
+                        // Collect data from certificate form 
+                        const certificateForm = document.getElementById('certificate-form');
+                        if(certificateForm) {
+                            const certificateFormData = new FormData(certificateForm);
+                            for (let [key, value] of certificateFormData.entries()) {
+                            allFormData.append(key, value);
+                            }
+                        }
+
+                        // Collect selected values from multi-select and single-select components
+                        // Multi-select components are stored as checkboxes, so we need to get checked ones
+                        for (let i = 0; i < selectsToValidate.length; i++) {
+                            const cmpConteiner = document.getElementById(selectsToValidate[i].id);
+                            if (!cmpConteiner) continue;
+                            const checked = cmpConteiner.querySelectorAll('input[type="checkbox"]:checked');
+
+                            allFormData.delete(selectsToValidate[i].name);
+
+                            for (const checkbox of checked) {
+                            allFormData.append(selectsToValidate[i].name, checkbox.value);
+                            }
+                        }
+
+                        // Determine if we're creating a new project or updating an existing one
+                        const input = installationForm?.querySelector('input[name="id"]');
+                        const projectId = input?.value?.trim();
+
+                        // Send data to appropriate endpoint (add if projectId doesn't exist, update if it does)
+                        let response = await fetch(projectId ? '/update-project' : '/add-project', {
+                            method: 'POST',
+                            body: allFormData
+                        });
+
+                        let data = await response.json();
+                            
+                        if(data.success){
+                            // Success: Close modal, reset forms, and update projects table
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('projectModal'));
+                            modal.hide();
+
+                            // Clear project ID
+                            input.value = "";
+
+                            // Reset all forms
+                            installationForm.reset();
+                            declarationForm.reset();
+                            technicalForm.reset();
+                            certificateForm.reset();
+                            
+                            // Update projects table (add new row or update existing)
+                            projectId ? updateProjects(data.project) : loadProjects(data.project);
+                            
+                        } else {
+                            // Error: Display validation errors or general error message
+                            if(data.fieldErrors){
+                            // Show field-specific validation errors
+                            Object.keys(data.fieldErrors).forEach(fieldKey => {
+                                const errorMessage = data.fieldErrors[fieldKey];
+
+                                if(errorMessage){
+                                showFieldError(fieldKey, errorMessage);
+                                }
+                            });
+                            } else {
+                            // Show general error message
+                            showAddprojectAlert(data.message)
+                            }
+                        }
+                    } catch (error) {
+                        // Network or other error occurred
+                        console.error('Error:', error);
+                        showAddprojectAlert('Error de conexión');
+
+                    } finally {
+                        // Restore button state (re-enable and restore original text)
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = originalHTML;
+                    }
+                });
+                    
+            }
+
+            /**
+             * Print Button Event Handler
+             * Saves project data first, then opens PDF generation in a new window
+             */
+            const printBtn = document.getElementById('printBtn');
+            if(printBtn){
+                printBtn.addEventListener('click', async function(event) {
+                    event.preventDefault();
+                    // Prevent double-click
+                    if (printBtn.disabled) return;
+
+                    // Disable button and show loading spinner
+                    printBtn.disabled = true;
+                    const originalHTML = printBtn.innerHTML;
+                    printBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Imprimiendo...';
+                    
+                    try {
+                        // Collect all form data (same process as save button)
+                        const allFormData = new FormData();
+                        
+                        const installationForm = document.getElementById('installation-form');
+                        if(installationForm) {
+                            const installationFormData = new FormData(installationForm);
+                            for (let [key, value] of installationFormData.entries()) {
+                            allFormData.append(key, value);
+                            }
+                        }
+                        
+                        
+                        const declarationForm = document.getElementById('declaration-form');
+                        if(declarationForm) {
+                            const declarationFormData = new FormData(declarationForm);
+                            for (let [key, value] of declarationFormData.entries()) {
+                            allFormData.append(key, value);
+                            }
+                        }
+                        
+                        const technicalForm = document.getElementById('technical-form');
+                        if(technicalForm) {
+                            const technicalFormData = new FormData(technicalForm);
+                            for (let [key, value] of technicalFormData.entries()) {
+                            console.log(`${key}:`, value);
+                            allFormData.append(key, value);
+                            }
+                        }
+
+                        const certificateForm = document.getElementById('certificate-form');
+                        if(certificateForm) {
+                            const certificateFormData = new FormData(certificateForm);
+                            for (let [key, value] of certificateFormData.entries()) {
+                            allFormData.append(key, value);
+                            }
+                        }
+
+                        for (let i = 0; i < selectsToValidate.length; i++) {
+                            const cmpConteiner = document.getElementById(selectsToValidate[i].id);
+                            if (!cmpConteiner) continue;
+                            const checked = cmpConteiner.querySelectorAll('input[type="checkbox"]:checked');
+
+                            allFormData.delete(selectsToValidate[i].name);
+
+                            for (const checkbox of checked) {
+                            allFormData.append(selectsToValidate[i].name, checkbox.value);
+                            }
+                        }
+
+                        const input = installationForm?.querySelector('input[name="id"]');
+                        const projectId = input?.value?.trim();
+
+                        let response = await fetch(projectId ? '/update-project' : '/add-project', {
+                            method: 'POST',
+                            body: allFormData
+                        });
+
+                        let data = await response.json();
+                            
+                        if(data.success){
+                            // Update projects table (add new row or update existing)
+                            projectId ? updateProjects(data.project) : loadProjects(data.project);
+                            
+                            // Get the final project ID (either existing or newly created)
+                            const finalProjectId = projectId || data.project?.id;
+                            if (finalProjectId && finalProjectId.trim() !== '') {
+                                // Open PDF generation in a new window
+                                window.open(`/generate-pdf/${finalProjectId}`, '_blank');
+                            } else {
+                                showAddprojectAlert('Error: No se pudo obtener el ID del proyecto');
+                            }
+                            
+                        } else {
+
+                            if(data.fieldErrors){
+
+                            Object.keys(data.fieldErrors).forEach(fieldKey => {
+                                const errorMessage = data.fieldErrors[fieldKey];
+
+                                if(errorMessage){
+                                showFieldError(fieldKey, errorMessage);
+                                }
+                            //invalidTabButton();
+                            });
+                            //invalidTabButton();
+                            } else {
+                            showAddprojectAlert(data.message)
+                            }
+                        }
+                    } catch (error) {
+                            
+                        console.error('Error:', error);
+                        showAddprojectAlert('Error de conexión');
+
+                    } finally {
+                        // Restaurar botón
+                        printBtn.disabled = false;
+                        printBtn.innerHTML = originalHTML;
+                    }
+                });
+                    
+            }
+            
+
+            /**
+             * Set up validation event listeners for text input fields
+             */
+            for ( let i = 0 ; i < fieldsToValidate.length ; i ++) {
+                const element = document.getElementById(fieldsToValidate[i].id);
+                const errorElement = document.getElementById(fieldsToValidate[i].id + '-error');
+                const label = document.querySelector(`label[for="${fieldsToValidate[i].id}"]`);
+
+                    // Set up validation for text input fields
+                    if (element) {
+                        // Validate when user leaves the field
+                        element.addEventListener('blur', async function() {
+                        const value = element.value.trim();
+                        
+                        // Send field to server for validation
+                        const result = await validateField(fieldsToValidate[i].id, value);
+                        // Show error if validation failed, clear error if successful
+                        showFieldError(fieldsToValidate[i].id, result.success ? '' : result.message);
+                        });
+
+                        // Clear error styling when user focuses on the fiel
+                        element.addEventListener('focus', function() {         
+                        if (errorElement) {
+                            if(label) label.classList.remove('text-danger');
+                            errorElement.innerHTML = ``; 
+                        }
+                        });
+
+                        // Clear error styling as user types (real-time feedback)
+                        element.addEventListener('input', function() {
+                        if(errorElement) {
+                            if(label) label.classList.remove('text-danger');
+                            errorElement.innerHTML = ``;
+                        }
+                        })
+                    }
+                
+            } 
+
+            /**
+             * Set up validation event listeners for select components (multi-select and single-select)
+             */
+            for (let i = 0; i < selectsToValidate.length; i++) {
+                const cmpConteiner = document.getElementById(selectsToValidate[i].id);
+                const cmpInput = document.getElementById(selectsToValidate[i].field);
+                const errorElement = document.getElementById(selectsToValidate[i].field +'-error');
+                const label = document.querySelector(`label[for="${selectsToValidate[i].id}"]`);
+
+                // Track if this component is currently active 
+                isActiveSelects[i] = false;
+
+                // Clear errors when user focuses on the component
+                cmpConteiner.addEventListener('focusin', () => {
+                    isActiveSelects[i] = true;
+                    cmpInput.classList.remove('invalid');
+                    if (errorElement) errorElement.innerHTML = '';
+                    if (label) label.classList.remove('text-danger');
+                })
+
+                // Validate when user leaves the component 
+                cmpConteiner.addEventListener('focusout', async (e) => {
+                    const next = e.relatedTarget;
+                    const cmpDropDown = document.getElementById(selectsToValidate[i].id + 'Dropdown');
+                    console.log("focusout");
+                    
+                    // Only validate if focus is moving outside the component and dropdown is closed
+                    if ((!next || !cmpConteiner.contains(next)) && !cmpDropDown.classList.contains('active')) {
+                        // Collect all selected values from checkboxes
+                        const selectedValues = [];
+                        const checkedNodeList = cmpConteiner.querySelectorAll('input[type="checkbox"]:checked');
+                        
+                        for (const checkbox of checkedNodeList) {
+                            selectedValues.push(checkbox.value);
+                        }
+                        // Validate selected values
+                        const result = await validateField(selectsToValidate[i].name, selectedValues);
+                        showFieldError(selectsToValidate[i].field, result.success ? '' : result.message);
+                    }
+                    
+                })
+
+                // Validate when user clicks outside the component (mousedown event)
+                // This handles cases where focusout might not fire correctly
+                document.addEventListener('mousedown', (e) => {
+                    // Only validate if click is outside component and component was previously active
+                    if(!cmpConteiner.contains(e.target) && isActiveSelects[i]) {
+                        setTimeout(async () => {
+                            // Collect all selected values from checkboxes
+                            const selectedValues = [];
+                            const checkedNodeList = cmpConteiner.querySelectorAll('input[type="checkbox"]:checked');
+                            isActiveSelects[i] = false;
+                        
+                            for (const checkbox of checkedNodeList) {
+                                selectedValues.push(checkbox.value);
+                            }
+                            console.log("Its me bitch mousedown");
+                            // Validate selected values
+                            const result = await validateField(selectsToValidate[i].name, selectedValues);
+                            showFieldError(selectsToValidate[i].field, result.success ? '' : result.message);
+                        }, 0);
+                    }
+                })
+
+            }                
+        });
+            
+        </script>
+    </head>
+
+    <body class="bg-light">
+
+        <!-- Header -->
+        <header class="container-xl mt-3 mb-4 py-4 d-flex justify-content-between align-items-center">
+            <img src="/static/DocuLift_FullLogo2.png" alt="DocuLift logo" style="width:250px;height:auto;">
+            <a class="btn btn-outline-secondary btn-sm" href="/logout">Log Out</a>
+        </header>
+
+        <!-- Título + CTA -->
+        <section class="container-xl d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 mb-0 fw-semibold">Documents</h1>
+            <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#projectModal">
+                <i class="bi bi-plus-circle me-1"></i> New Document
+            </button>
+        </section>
+
+        <!-- Modal -->
+        <div class="modal fade" id="projectModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered project-modal">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="projectModalLabel">New Document</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <nav class="d-flex justify-content-center align-items-center">
+                    <div class="btn-group w-100 h-100" role="group" id="tabButtons">
+                        <button type="button" class="btn btn-outline-secondary btn-sm active" data-tab="installation" style="background-color: #027373;  color:#fff;  border-color:#027373;">instalación</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-tab="declaration">declaración</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-tab="technical_sheet">ficha técnica</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-tab="certificate">certificados</button>
+                    </div>
+                </nav>
+                <div id="addproject-alert" class="alert alert-danger d-none mt-4 mb-0" role="alert"></div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="installation">
+                        <form id="installation-form" class="py-1">
+                            <input name="id" type="hidden">
+                            <h6 class="mt-4 mb-3">EXPEDIENTE</h6>
+                            <div class="d-flex gap-5 bd-highlight mb-3 test-form">
+                                <div class="form-floating form-floating-sm flex-fill bd-highlight">
+                                    <input id="orderNumber" name="orderNumber" placeholder="Nº de Ordern" type="text" class="form-control">
+                                    <label for="orderNumber">Nº de Orden</label>
+                                    <div class="fw-light invalid-feedback" id="orderNumber-error"></div>
+                                </div>
+                                <div class="form-floating form-floating-sm flex-fill bd-highlight">
+                                    <input id="rae" name = "rae" placeholder="RAE" type="text" class="form-control">
+                                    <label for="rae">RAE</label>
+                                    <div class="fw-light invalid-feedback" id="rae-error"></div>
+                                </div>
+                            </div>
+
+                            <h6 class="mt-4 mb-3">DATOS CIENTE</h6>
+                            <div class="d-flex gap-3 bd-highlight mb-3 test-form">
+                                <div class="form-floating form-floating-sm flex-grow-1 bd-highlight">
+                                    <input id="clientName" name="clientName" placeholder="Nombre" type="text" class="form-control form-control-sm">
+                                    <label for="clientName">Nombre</label>
+                                    <div class="fw-light invalid-feedback" id="clientName-error"></div>
+                                </div>
+                                <div class="form-floating form-floating-sm bd-highlight">
+                                    <input id="clientNIF" name="clientNIF" placeholder="NIF" type="text" class="form-control form-control-sm">
+                                    <label for="clientNIF">NIF</label>
+                                    <div class="fw-light invalid-feedback" id="clientNIF-error"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-floating form-floating-sm mb-3">
+                                <input id="clientAddress" name="clientAddress" placeholder="Dirección" type="text" class="form-control form-control-sm">
+                                <label for="clientAddress">Dirección</label>
+                                <div class="fw-light invalid-feedback" id="clientAddress-error"></div>
+                            </div>
+                            <div class="d-flex bd-highlight gap-3">
+                                <div class="form-floating form-floating-sm flex-grow-1 bd-highlight">
+                                    <input id="clientCity" name="clientCity" placeholder="Locaidad" type="text" class="form-control form-control-sm">
+                                    <label for="clientCity">Localidad</label>
+                                    <div class="fw-light invalid-feedback" id="clientCity-error"></div>
+                                </div>
+                                <div class="form-floating form-floating-sm bd-highlight">
+                                    <input id="clientZip" name="clientZip" placeholder="Código postal" type="text" class="form-control form-control-sm">
+                                    <label for="clientZip">Código postal</label>
+                                    <div class="fw-light invalid-feedback" id="clientZip-error"></div>
+                                </div>
+                            </div>
+
+                            <h6 class="mt-4 mb-3">DATOS INSTALCIÓN</h6>
+                            <div class="form-floating form-floating-sm mb-3">
+                                <input id="liftAddress" name="liftAddress" placeholder="Dirección" type="text" class="form-control form-control-sm">
+                                <label for="liftAddress">Dirección</label>
+                                <div class="fw-light invalid-feedback" id="liftAddress-error"></div>
+                            </div>
+                            <div class="d-flex bd-highlight gap-3">
+                                <div class="form-floating form-floating-sm flex-grow-1 bd-highlight">
+                                    <input id="liftCity" name="liftCity" placeholder="Lacaidad" type="text" class="form-control form-control-sm">
+                                    <label for="liftCity">Localidad</label>
+                                    <div class="fw-light invalid-feedback" id="liftCity-error"></div>
+                                </div>
+                                <div class="form-floating form-floating-sm bd-highlight">
+                                    <input id="liftZip" name="liftZip" placeholder="Código postal" type="text" class="form-control form-control-sm">
+                                    <label for="liftZip">Código postal</label>
+                                    <div class="fw-light invalid-feedback" id="liftZip-error"></div>
+                                </div>                        
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="declaration">
+                        <form id="declaration-form" class="py-1">
+                            <h6 class="mt-4 mb-3">TIPO DE REFORMA</h6>
+                            <div class="multi-select-container" id="ModificationTypes">
+                                <div id="ModificationTypesInput" class="multi-select-input">
+                                    <div class="multi-select-tags-container">
+                                        <input type="text" class="multi-select-search-input" placeholder="Selecciona opciones...">
+                                    </div>
+                                    <button type="button" class="multi-select-clear-all" title="Limpiar todas las selecciones">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                                <div id="ModificationTypesDropdown" class="multi-select-dropdown">
+                                    <div class="multi-select-options">
+                                        {% for modification in modification_types %}
+                                        <div class="multi-select-option">
+                                                <input type="checkbox" value="{{modification.code}}">
+                                                <span>{{ modification.label }}</span>
+                                        </div>
+                                        {% endfor %}    
+                                        </div>
+                                        </div>
+                                        </div>
+                            <div class="fw-light invalid-feedback" id="ModificationTypesInput-error"></div>
+
+                            <h6 class="mt-4 mb-3">Normativa aplicada</h6>
+                            <div class="multi-select-container" id="AplicableNorms">
+                                <div id="AplicableNormsInput" class="multi-select-input" tabindex="0">
+                                    <div class="multi-select-tags-container">
+                                        <input type="text" class="multi-select-search-input" placeholder="Selecciona opciones...">
+                                    </div>
+                                    <button type="button" class="multi-select-clear-all" title="Limpiar todas las selecciones">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                                <div id="AplicableNormsDropdown" class="multi-select-dropdown">
+                                    <div class="multi-select-options">
+                                        {% for applicable_norm in applicable_norms %}
+                                            <div class="multi-select-option" style="padding: 0.5rem;">
+                                                <input type="checkbox" value="{{applicable_norm.code}}">
+                                                <span>{{ applicable_norm.label }}</span>
+                                        </div>
+                                        {% endfor %}
+                                        </div>
+                                        </div>
+                                        </div>
+                            <div class="fw-light invalid-feedback" id="AplicableNormsInput-error"></div>
+
+                            <h6 class="mt-4 mb-3">PROCESO DE LEGALIZACIÓN</h6>
+                            <div class="single-select-container" id="LegalizationProcess">
+                                <div id="LegalizationProcessInput" class="single-select-input" tabindex="0">
+                                    <div class="single-select-text-container">
+                                        <input type="text" class="single-select-search-input" placeholder="Selecciona opciones...">
+                                    </div>
+                                    <div  class="single-select-chevron-down">
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                </div>
+                                <div id="LegalizationProcessDropdown" class="single-select-dropdown">
+                                    <div class="single-select-options">
+                                        {% for legalization_process in legalization_process %}
+                                        <div class="single-select-option">
+                                                <input type="checkbox" value="{{legalization_process.code}}">
+                                                <span>{{ legalization_process.label }}</span>
+                                        </div>
+                                        {% endfor %}   
+                                        </div>
+                                        </div>
+                                    </div>
+                            <div class="fw-light invalid-feedback mb-3" id="LegalizationProcessInput-error"></div>
+
+                            <div class="d-flex flex-column bd-highlight mb-3">
+                                <div class="form-floating form-floating-sm bd-highlight legalization-process-form" style="display: none;">
+                                    <input id="examType" name="examType" placeholder="Examen de tipo de modificación" type="text" class="form-control form-control-sm" >
+                                    <label for="examType">Examen de tipo de modificación</label>
+                                </div>
+                                <div class="form-floating form-floating-sm bd-highlight legalization-process-form" style="display: none;">
+                                    <input id="oca" name="oca" placeholder="Organismo de control de la V.U" type="text" class="form-control form-control-sm">
+                                    <label for="oca">Organismo de control de la V.U</label>
+                                </div>
+                                <div class="form-floating form-floating-sm bd-highlight legalization-process-form" style="display: none;">
+                                    <input id="qualityManagementSystem" name="qualityManagementSystem" placeholder="Sistema de gestión de la calidad certificado" type="text" class="form-control form-control-sm">
+                                    <label for="qualityManagementSystem">Sistema de gestión de la calidad certificado</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="technical_sheet">
+                        <form id="technical-form" class="py-1">
+                            <h6 class="mt-4 mb-3">DATOS TÉCNICOS</h6>
+                            <table class="table table-borderless technical-data-table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="form-floating form-floating-sm ">
+                                                    <input id="nominalLoad" name="nominalLoad" placeholder="Carga nominal" type="text" class="form-control">
+                                                    <label for="nominalLoad">Carga nominal [kg]</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="speed" name="speed" placeholder="Velocidad nominal" type="text" class="form-control">
+                                                    <label for="speed">Velocidad nominal [m/s]</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="single-select-container" id="machineRoom">
+                                                <div class="single-select-input" tabindex="0">
+                                                    <div class="single-select-text-container single-select-floating">
+                                                            <input id="machineRoomInput" name="machineRoomInput" type="text" class="single-select-search-input" placeholder="">
+                                                            <label for="machineRoomInput">Cuarto de máquinas</label>
+                                                    </div>
+                                                    <div  class="single-select-chevron-down">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="single-select-dropdown">
+                                                    <div class="single-select-options">
+                                                            {% for machine_room in technical_specs['machineRoom'] %}
+                                                        <div class="single-select-option">
+                                                                    <span>{{ machine_room }}</span>
+                                                        </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="passengers" name="passengers" placeholder="Nº de pasajeros" type="text" class="form-control">
+                                                    <label for="passengers">Nº de pasajeros</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="single-select-container" id="controlSystem">
+                                                <div class="single-select-input" tabindex="0">
+                                                    <div class="single-select-text-container single-select-floating">
+                                                            <input id="controlSystemInput" name="controlSystemInput" type="text" class="single-select-search-input" placeholder="">
+                                                            <label for="controlSystemInput">Sist. de control</label>
+                                                    </div>
+                                                    <div  class="single-select-chevron-down">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="single-select-dropdown">
+                                                    <div class="single-select-options">
+                                                            {% for control_system in technical_specs['controlSystem'] %}
+                                                        <div class="single-select-option">
+                                                                    <span>{{ control_system }}</span>
+                                                        </div>
+                                                            {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="cabDimensions" name="cabDimensions" placeholder="Dimensiones de cabina" type="text" class="form-control">
+                                                    <label for="cabDimensions">Dimensiones de cabina [mm]</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="stops" name="stops" placeholder="Nº de paradas" type="text" class="form-control">
+                                                    <label for="stops">Nº de paradas</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="single-select-container" id="nominalTension">
+                                                <div class="single-select-input" tabindex="0">
+                                                    <div class="single-select-text-container single-select-floating">
+                                                            <input id="nominalTensionInput" name="nominalTensionInput" type="text" class="single-select-search-input" placeholder="">
+                                                            <label for="nominalTensionInput">Tensión nominal [V]</label>
+                                                    </div>
+                                                    <div  class="single-select-chevron-down">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="single-select-dropdown">
+                                                    <div class="single-select-options">
+                                                            {% for nominal_tension in technical_specs['nominalTension'] %}
+                                                        <div class="single-select-option">
+                                                                    <span>{{ nominal_tension }}</span>
+                                                        </div>
+                                                            {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="single-select-container" id="doorType">
+                                                <div class="single-select-input" tabindex="0">
+                                                    <div class="single-select-text-container single-select-floating">
+                                                            <input id="doorTypeInput" name="doorTypeInput" type="text" class="single-select-search-input" placeholder="">
+                                                            <label for="doorTypeInput">Tipo de puerta</label>
+                                                    </div>
+                                                    <div  class="single-select-chevron-down">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="single-select-dropdown">
+                                                    <div class="single-select-options">
+                                                            {% for door_type in technical_specs['doorType'] %}
+                                                        <div class="single-select-option">
+                                                                    <span>{{ door_type }}</span>
+                                                        </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="travel" name="travel" placeholder="Recorrido" type="text" class="form-control">
+                                                    <label for="travel">Recorrido [m]</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="nominalPower" name="nominalPower" placeholder="Potencia nominal" type="text" class="form-control">
+                                                    <label for="nominalPower">Potencia nominal [kW]</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="doorSize" name="doorSize" placeholder="Luz de puerta" type="text" class="form-control">
+                                                    <label for="doorSize">Luz de puerta [mm]</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="numCable" name="numCable" placeholder="Nº de cables" type="text" class="form-control">
+                                                    <label for="numCable">Nº de cables</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="nominalIntensity" name="nominalIntensity" placeholder="Intensidad nominal" type="text" class="form-control">
+                                                    <label for="nominalIntensity">Intensidad nominal [A]</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="single-select-container" id="cableDiameter">
+                                                <div class="single-select-input" tabindex="0">
+                                                    <div class="single-select-text-container single-select-floating">
+                                                            <input id="cableDiameterInput" name="cableDiameterInput" type="text" class="single-select-search-input" placeholder="">
+                                                            <label for="cableDiameterInput">Diametro cables [mm]</label>
+                                                    </div>
+                                                    <div  class="single-select-chevron-down">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="single-select-dropdown">
+                                                    <div class="single-select-options">
+                                                            {% for cable_diameter in technical_specs['cableDiameter'] %}
+                                                        <div class="single-select-option">
+                                                                    <span>{{ cable_diameter }}</span>
+                                                        </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="single-select-container" id="ratio">
+                                                <div class="single-select-input" tabindex="0">
+                                                    <div class="single-select-text-container single-select-floating">
+                                                            <input id="ratioInput" name="ratioInput" type="text" class="single-select-search-input" placeholder="">
+                                                            <label for="ratioInput">Ratio</label>
+                                                    </div>
+                                                    <div  class="single-select-chevron-down">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="single-select-dropdown">
+                                                    <div class="single-select-options">
+                                                            {% for ratio in technical_specs['ratio'] %}
+                                                        <div class="single-select-option">
+                                                                    <span>{{ ratio }}</span>
+                                                        </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="cabMass" name="cabMass" placeholder="Masa cabina" type="text" class="form-control">
+                                                    <label for="cabMass">Masa cabina [kg]</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="single-select-container" id="cabRails">
+                                                <div class="single-select-input" tabindex="0">
+                                                    <div class="single-select-text-container single-select-floating">
+                                                            <input id="cabRailsInput" name="cabRailsInput" type="text" class="single-select-search-input" placeholder="">
+                                                            <label for="cabRailsInput">Guías cabina</label>
+                                                    </div>
+                                                    <div class="single-select-chevron-down">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="single-select-dropdown">
+                                                    <div class="single-select-options">
+                                                            {% for cab_rails in technical_specs['cabRails'] %}
+                                                        <div class="single-select-option">
+                                                                    <span>{{ cab_rails }}</span>
+                                                        </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-floating form-floating-sm">
+                                                    <input id="cwMass" name="cwMass" placeholder="Masa contrapeso" type="text" class="form-control">
+                                                    <label for="cwMass">Masa contrapeso [kg]</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="single-select-container" id="cwRails">
+                                                <div class="single-select-input" tabindex="0">
+                                                    <div class="single-select-text-container single-select-floating">
+                                                            <input id="cwRailsInput" name="cwRailsInput" type="text" class="single-select-search-input" placeholder="">
+                                                            <label for="cwRailsInput">Guías contrapeso</label>
+                                                    </div>
+                                                    <div  class="single-select-chevron-down">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="single-select-dropdown">
+                                                    <div class="single-select-options">
+                                                            {% for cw_rails in technical_specs['cwRails'] %}
+                                                        <div class="single-select-option">
+                                                                    <span>{{ cw_rails }}</span>
+                                                        </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+
+                     <div class="tab-pane fade" id="certificate">
+                        <form id="certificate-form" class="py-1">
+                        <h6 class="mt-4 mb-3">CERRADURAS</h6>
+                            <div class="safety-device d-flex flex-wrap gap-3">
+                                <div class="single-select-container" id="lockingDevice1">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="lockingDevice1Input" name="lockingDevice1Input" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="lockingDevice1Input">Cerradura 1</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for locking_device in certificates['lockingDevice'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ locking_device }}</span>
+                                            </div>
+                                                {% endfor %}
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="single-select-container" id="lockingDevice2">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="lockingDevice2Input" name="lockingDevice2Input" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="lockingDevice2Input">Cerradura 2</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for locking_device in certificates['lockingDevice'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ locking_device }}</span>
+                                            </div>
+                                                {% endfor %}
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <h6 class="mt-4 mb-3">PARASUBIDAS</h6>
+                            <div class="single-select-container" id="machineBrake">
+                                <div class="single-select-input" tabindex="0">
+                                    <div class="single-select-text-container">
+                                            <input id="machineBrakeInput" name="machineBrakeInput" type="text" class="single-select-search-input" placeholder="Selecciona opciones...">
+                                    </div>
+                                    <div  class="single-select-chevron-down">
+                                        <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                </div>
+                                <div class="single-select-dropdown">
+                                    <div class="single-select-options">
+                                            {% for machine_brake in certificates['machineBrake'] %}
+                                        <div class="single-select-option">
+                                                    <span>{{ machine_brake }}</span>
+                                        </div>
+                                            {% endfor %}
+                                        </div>
+                                </div>
+                            </div>
+                            <h6 class="mt-4 mb-3">PARACAÍDAS</h6>
+                            <div class="safety-device d-flex flex-wrap gap-3">
+                                <div class="single-select-container" id="cab_parachute">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="cabParachuteInput" name="cabParachuteInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="cabParachuteInput">Cabina</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for cab_parachute in certificates['parachute'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ cab_parachute }}</span>
+                                            </div>
+                                                {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="single-select-container" id="cw_parachute">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="cwParachuteInput" name="cwParachuteInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="cwParachuteInput">Contrapeso</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for cw_parachute in certificates['parachute'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ cw_parachute }}</span>
+                                            </div>
+                                                {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h6 class="mt-4 mb-3">LIMITADOR</h6>
+                            <div class="safety-device d-flex flex-wrap gap-3">
+                                <div class="single-select-container" id="cab_speedGovernor">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="cabSpeedGovernorInput" name="cabSpeedGovernorInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="cabSpeedGovernorInput">Cabina</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for cab_speed_governor in certificates['speedGovernor'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ cab_speed_governor }}</span>
+                                            </div>
+                                                {% endfor %}
+                                            </div>
+                                            </div>
+                                            </div>
+                                <div class="single-select-container" id="cw_speedGovernor">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="cwSpeedGovernorInput" name="cwSpeedGovernorInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="cwSpeedGovernorInput">Contrapeso</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for cw_speed_governor in certificates['speedGovernor'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ cw_speed_governor }}</span>
+                                            </div>
+                                                {% endfor %}
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h6 class="mt-4 mb-3">AMORTIGUADOR</h6>
+                            <div class="safety-device d-flex flex-wrap gap-3">
+                                <div class="single-select-container" id="cab_buffer">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="cabBufferInput" name="cabBufferInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="cabBufferInput">Cabina</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for cab_buffer in certificates['buffer'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ cab_buffer }}</span>
+                                            </div>
+                                                {% endfor %}
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="single-select-container" id="cw_buffer">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="cwBufferInput" name="cwBufferInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="cwBufferInput">Contrapeso</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for cw_buffer in certificates['buffer'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ cw_buffer }}</span>
+                                            </div>
+                                                {% endfor %}
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h6 class="mt-4 mb-3">CIRCUITO DE SEGURIDAD</h6>
+                                <div class="single-select-container" id="safetyCircuit">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container">
+                                                <input id="safetyCircuitInput" name="safetyCircuitInput" type="text" class="single-select-search-input" placeholder="Selecciona opciones...">
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for safety_circuit in certificates['safetyCircuit'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ safety_circuit }}</span>
+                                            </div>
+                                                {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            <h6 class="mt-4 mb-3">UCM</h6>
+                            <div class="ucm d-flex flex-wrap gap-3">
+                                <div class="single-select-container" id="ucmDETECT">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="ucmDETECTInput" name="ucmDETECTInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="ucmDETECTInput">Detección</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for ucm_detect in certificates['ucmDETECT'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ ucm_detect }}</span>
+                                            </div>
+                                                {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="single-select-container" id="ucmACT">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="ucmACTInput" name="ucmACTInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="ucmACTInput">Actuación</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for ucm_act in certificates['ucmACT'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ ucm_act }}</span>
+                                            </div>
+                                                {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="single-select-container" id="ucmSTOP">
+                                    <div class="single-select-input" tabindex="0">
+                                        <div class="single-select-text-container single-select-floating">
+                                                <input id="ucmSTOPInput" name="ucmSTOPInput" type="text" class="single-select-search-input" placeholder="">
+                                                <label for="ucmSTOPInput">Parada</label>
+                                        </div>
+                                        <div  class="single-select-chevron-down">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="single-select-dropdown">
+                                        <div class="single-select-options">
+                                                {% for ucm_stop in certificates['machineBrake'] %}
+                                            <div class="single-select-option">
+                                                        <span>{{ ucm_stop }}</span>
+                                            </div>
+                                                {% endfor %}
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-outline-secondary nav-btn" id="previousBtn" data-action="previous" style="display: none;">
+                        <i class="bi bi-chevron-left me-1"></i>Previous
+                    </button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary nav-btn" id="nextBtn" data-action="next">
+                        Next<i class="bi bi-chevron-right ms-1"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary print-btn" id="printBtn" data-action="print" style="display: none;">
+                        <i class="bi bi-printer-fill me-1"></i>Print
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary save-btn" id="saveBtn" data-action="save">
+                        <i class="bi bi-check-lg me-1"></i>Save
+                    </button>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        
+        <!-- Table-->
+        <main class="container-xl dashboard">
+            <table class="table table-hover align-middle table-rounded">
+                <thead>
+                    <tr>
+                        <th class="text-start fw-normal ps-5">Fecha</th>
+                        <th class="text-start fw-normal ps-5">Orden</th>
+                        <th class="text-start fw-normal ps-5">RAE</th>
+                        <th class="text-start fw-normal ps-5">Referencia</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="projects-table">
+                    {% if projects and projects|length > 0 %}
+                      {% for project in projects %}
+                        <tr class="project-row" id="project-{{project.id}}">
+                          <td class="text-start fw-bold ps-5">
+                            {{ (project.updated_at or project.created_at) or '' }}
+                        </td>
+                          <td class="text-start fw-bold ps-5 font-monospace">
+                            {{ project.order_number }}
+                        </td>
+                          <td class="text-start ps-5">
+                            {{ project.rae or '' }}
+                        </td>
+                          <td class="text-start ps-5">
+                            {{ project.lift_address or '' }}
+                        </td>
+                          <td>
+                            <div class="d-flex flex-row bd-highlight justify-content-end gap-1 opacity-0 action-buttons">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm bd-highlight" data-bs-toggle="modal" data-bs-target="#projectModal" data-project-id="{{project.id}}">
+                                        <i class="bi bi-pencil me-1"></i>Editar
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm btn-delete bd-highlight" data-bs-toggle="modal" data-bs-target="#deleteModal" data-project-id="{{project.id}}">
+                                        <i class="bi bi-trash me-1"></i>Eliminar
+                                    </button>
+                            </div>
+                        </td>
+                    </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr id="empty-row">
+                        <td class="text-center text-muted" colspan="5">No hay proyectos todavía</td>
+                      </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            <!-- Modal -->
+            <div class="modal fade delete-modal" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header text-white">
+                            <h5 class="modal-title" id="deleteModalLabel">¡ATENCIÓN!</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div id="deleteproject-alert" class="alert alert-danger d-none mt-4 mb-0" role="alert"></div>
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <p class="mb-0">¿Estás seguro de que quieres eliminar este documento?<br>Esta acción no se podra deshacer.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg me-1"></i></i>Cancelar
+                                </button>
+                            <form class="delete-form">
+                                <input name="id" type="hidden">
+                                <button type="button" class="btn btn-outline-secondary btn-modal-delete text-white">
+                                    <i class="bi bi-trash me-1"></i>Eliminar
+                                </button>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="container-xl text-center py-3 small text-muted">
+            Lista de las órdenes recientes
+        </footer>
+
+    </body>
+</html>

@@ -1,6 +1,6 @@
 
 # DocuLift
-#### Video Demo: <https://www.youtube.com/watch?v=Ibxx_JDMNc8>
+
 #### Description:
 
 DocuLift is a full-stack web application built with Flask, SQLite, HTML/CSS, and JavaScript designed to simplify and automate the technical documentation of elevator renovation or modification projects.
